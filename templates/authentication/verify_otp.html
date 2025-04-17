@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            flex-direction: column; /* Stack the logo and container */
+        }
+        .auth-logo {
+            text-align: center; /* Center the logo */
+            margin-bottom: 20px; /* Add space between logo and login container */
+        }
+        .auth-logo img {
+            max-height: 50px;
+            width: auto; /* Maintain aspect ratio */
+        }
+        .login-container {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            min-height: 450px;
+            width: 50%;
+            text-align: center;
+        }
+        .login-container h5 {
+            color: #007bff; /* Blue color */
+            margin-bottom: 15px;
+        }
+        .login-container h6 {
+            margin-bottom: 40px; /* Gap between subheading and the email field */
+        }
+        .form-group label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+        }
+        .form-control {
+            height: 37px;
+            border-radius: 5px;
+            padding-left: 40px;
+            background-color: #f5f5f5;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px; /* Add gap between form fields */
+        }
+        .form-control::placeholder {
+            color: #adb5bd;
+        }
+        .btn-login {
+            background-color: #4022e9;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            font-weight: bold;
+            height: 37px;
+            width: 45%;
+        }
+        .btn-login:hover {
+            background-color: #346ffa9c; /* Remove hover effect */
+        }
+        .btn-login a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+        .btn-register {
+            background-color: transparent;
+            color: #d9534f;
+            border: 2px solid #346ffa9c;
+            border-radius: 5px;
+            height: 37px;
+            width: 45%;
+            font-weight: bold;
+        }
+        .btn-register:hover {
+            background-color: transparent; /* Remove hover effect */
+            color: #d9534f;
+        }
+        .btn-register a {
+            color: #000000;
+            text-decoration: none;
+        }
+        .form-inline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .form-inline .form-check-label {
+            margin-left: 5px;
+        }
+        .forgot-password {
+            color: #adb5bd;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .text-center a {
+            color: #d9534f;
+            font-weight: bold;
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 14px;
+            color: #6c757d; /* Muted gray */
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #007bff; /* Blue link */
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-logo">
+        <img src="/static/LogoWhite.png"> <!-- Add your logo path here -->
+    </div> 
+    <div class="login-container">
+        <h5>Verify OTP</h5>
+        <!-- Display Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- OTP Form -->
+        <form method="POST" action="{{ url_for('verify_otp') }}">
+            <div class="form-group">
+                <label for="otp">Enter OTP</label>
+                <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required>
+            </div>
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <input type="password" id="new_password" name="new_password" class="form-control" placeholder="New Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js">
+        const flashMessages = document.querySelectorAll('.alert');
+
+        // Set a timer for each message to auto-dismiss after 5 seconds
+        flashMessages.forEach((alert) => {
+           setTimeout(() => {
+           alert.classList.remove('show'); // Hide the alert
+           alert.classList.add('fade');   // Add fade-out effect
+           setTimeout(() => alert.remove(), 150); // Remove element after fade-out
+           }, 3000); // 3000ms = 3 seconds
+        });
+    </script>
+</body>
+</html>

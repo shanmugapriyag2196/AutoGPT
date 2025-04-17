@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{function}} Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            height: 12vh;
+            padding: 10px 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .menu-container {
+            cursor: pointer;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            color: black;
+        }
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .logo {
+            height: 35px;
+        }
+        .logout-container {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .logout-icon {
+            font-size: 20px;
+            color: black; /* Red color for logout */
+        }
+
+        .logout-icon:hover {
+            color: black; /* Darker red on hover */
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            left: 5px;
+            width: 250px;
+            z-index: 1000;
+            display: none;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #343a40;
+            font-size: 1rem;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+        h5 {
+            color: #0b7ef1;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: white;
+            color: black;
+            padding: 10px;
+            text-align: left;
+            border: none; /* Remove vertical borders */
+            border-bottom: 2px solid #ddd; /* Only bottom border for headers */
+        }
+        td {
+            padding: 10px;
+            border: none; /* Remove vertical borders */
+            border-bottom: 1px solid #ddd; /* Add bottom border for rows */
+        }
+        tr:nth-child(even) {
+            background-color: #e9ecef;
+        }
+        tr:nth-child(odd) {
+            background-color: #e9ecef;
+        }
+        .actions {
+            text-align: center;
+        }
+        .actions i {
+            font-size: 1.2rem;
+            margin: 0 5px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        .actions i:hover {
+            color: #007bff;
+        }
+        .back-icon-container {
+            position: absolute;
+            top: 90px;
+            left: 20px;
+        }
+
+        .back-icon {
+            font-size: 14px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .back-icon:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="menu-container" onclick="toggleDropdown()">
+            <i class="fas fa-bars menu-icon"></i>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <a href="{{ url_for('dashboard') }}">Home</a>
+                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                {% if session['role'] in ['Admin', 'Manager'] %}
+                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                {% endif %}
+                <a href="{{ url_for('dashboard') }}">Exit</a>
+            </div>
+        </div>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
+        </div>
+        <div class="logout-container">
+            <a href="{{ url_for('index') }}" title="Log Out">
+                <i class="fas fa-sign-out-alt logout-icon"></i>
+            </a>
+        </div>
+    </header>
+    <div class="back-icon-container">
+        <a href="{{ url_for('dashboard') }}" class="back-icon" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+    <div class="container">
+        <h5>{{function}} Dashboard</h5>
+        <!-- Display Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Owner</th>
+                    <th>Version</th>
+                    <th>Last Updated</th>
+                    <th class="actions">Actions</th>
+                </tr>
+            </thead> 
+            <tbody>
+                {% if prompts %}
+                    {% for row in prompts %}
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user['description'] }}</td> <!-- Displaying description -->
+                        <td>{{ user['username'] }}</td> <!-- Displaying owner -->
+                        <td>{{ row['version'] }}</td> <!-- Displaying version -->
+                        <td>{{ row['timestamp'] }}</td> <!-- Displaying last updated -->
+                        <td class="actions">
+                            <a href="{{ url_for('edit_autogpt', prompt_id=row['id']) }}" title="Edit"><i class="bi bi-pencil"></i></a>
+                            <a href="{{ url_for('run_autogpt', prompt_id=row['id']) }}" title="Run"><i class="bi bi-play-circle"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-danger">No matching data found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+            
+                        
+        </table>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close dropdown menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('dropdown-menu');
+            const menuContainer = document.querySelector('.menu-container');
+            if (!menuContainer.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

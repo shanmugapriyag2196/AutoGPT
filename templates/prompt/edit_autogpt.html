@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Prompt</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+
+body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+            
+        }
+         
+        .container {
+            max-width: 600px;
+            margin: left;
+            background: #ffffff;
+            padding: 30px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .menu-container {
+            cursor: pointer;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            color: black;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .logo {
+            height: 35px;
+        }
+
+        .logout-container {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .logout-icon {
+            font-size: 20px;
+            color: black; /* Red color for logout */
+        }
+
+        .logout-icon:hover {
+            color: black; /* Darker red on hover */
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            left: 5px;
+            width: 250px;
+            z-index: 1000;
+            display: none;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #343a40;
+            font-size: 1rem;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+        h5 {
+            text-align: center;
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 20px;
+        } 
+        .form-group label {
+            font-weight: bold;
+            color: #333;
+        }
+        .form-control {
+            height: 50px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        textarea.form-control {
+            height: auto;
+            padding: 10px;
+        }
+        .btn-success {
+            background-color: #007bff;
+            border: none;
+            width: 30%;
+            height: 40px;
+            font-weight: bold;
+            border-radius: 25px;    
+        }
+        .btn-success:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border: none;
+            width: 30%;
+            height: 40px;
+            font-weight: bold;
+            border-radius: 25px;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .select-wrapper {
+            position: relative;
+        }
+        .select-wrapper select {
+            appearance: none;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            height: 50px;
+        }
+        .select-wrapper::after {
+            content: "▼";
+            font-size: 14px;
+            color: #6c757d;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .footer a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .back-icon-container {
+            position: absolute;
+            top: 90px;
+            left: 20px;
+        }
+
+        .back-icon {
+            font-size: 14px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .back-icon:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="menu-container" onclick="toggleDropdown()">
+            <i class="fas fa-bars menu-icon"></i>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <a href="{{ url_for('dashboard') }}">Home</a>
+                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                {% if session['role'] in ['Admin', 'Manager'] %}
+                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                {% endif %}
+                <a href="{{ url_for('roles_permission') }}">Exit</a>
+                
+            </div>
+        </div>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
+        </div>
+    <!-- Logout Icon -->
+        <div class="logout-container">
+           <a href="{{ url_for('index') }}" title="Log Out">
+               <i class="fas fa-sign-out-alt logout-icon"></i>
+           </a>
+        </div>
+    </header>  
+    <!--<div class="back-icon-container">
+        <a href="javascript:history.back();" class="back-icon" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>-->
+    <div class="back-icon-container">
+        <a href="#" onclick="goBack()" class="back-icon" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div>
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <h5>Edit Autogpt</h5>
+        <form method="POST" action="">
+            <!-- GPT Name -->
+            <div class="form-group">
+                <label for="gpt_name">GPT Name</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="gpt_name"
+                    name="gpt_name" 
+                    value="{{ prompt['gpt_name'] }}">
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea 
+                    class="form-control" 
+                    id="description" 
+                    name="description" 
+                    rows="4">{{ prompt['description'] }}</textarea>
+            </div>
+
+            <!-- Business Function Dropdown -->
+            <div class="form-group">
+                <label for="business_function">Business Function</label>
+                <div class="select-wrapper">
+                    <select 
+                        class="form-control" 
+                        id="business_function" 
+                        name="business_function">
+                    {% for function in functions %}
+                        <option value="{{ function }}" {% if function in prompt['business_function'] %}selected{% endif %}>{{ function }}</option>
+                    {% endfor %}                    
+                    </select>
+                </div>
+            </div>
+
+            <!-- Prompt -->
+            <div class="form-group">
+                <label for="prompt">Prompt</label>
+                <textarea 
+                    class="form-control" 
+                    id="prompt" 
+                    name="prompt" 
+                    rows="4">{{ prompt['prompt'] }}</textarea>
+            </div>
+            
+            <!-- Output Template -->
+            <div class="form-group">
+                <label for="template_file">Output Template</label>
+                <textarea 
+                    class="form-control" 
+                    id="template_file" 
+                    name="template_file" 
+                    rows="4">{{ prompt['template_file'] }}</textarea>
+            </div>
+
+            <!-- Input Expected -->
+            <div class="form-group">
+                <label for="input_expected">Input Expected</label>
+                <textarea 
+                    class="form-control" 
+                    id="input_expected" 
+                    name="input_expected" 
+                    rows="5">{{ prompt['input_expected'] }}</textarea>
+            </div>
+        
+            <!-- Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-success">Update</button>
+                <a href="{{ url_for('view_autogptPermission') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Close dropdown menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('dropdown-menu');
+            const menuContainer = document.querySelector('.menu-container');
+            if (!menuContainer.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        function goBack() {
+        if (document.referrer) {
+            history.back(); // Go to previous page if history exists
+        } else {
+            window.location.href = "{{ url_for('dashboard') }}"; // Redirect to Dashboard if no history
+        }
+    }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+           const flashMessages = document.querySelectorAll('.alert');
+
+        // Set a timer for each message to auto-dismiss after 5 seconds
+        flashMessages.forEach((alert) => {
+           setTimeout(() => {
+           alert.classList.remove('show'); // Hide the alert
+           alert.classList.add('fade');   // Add fade-out effect
+           setTimeout(() => alert.remove(), 150); // Remove element after fade-out
+           }, 3000); // 3000ms = 3 seconds
+        });
+    });
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="footer">
+        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
+    </div>
+</body>
+</html>

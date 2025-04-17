@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .logo-container img {
+            max-width: 150px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        .account-container {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .account-container h6 {
+            margin-bottom: 20px; /* Adjusted gap between heading and form */
+        }
+
+        .form-group label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+        }
+
+        .form-control {
+            height: 37px;
+            border-radius: 5px;
+            padding-left: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ced4da;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            height: 37px;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-wrapper select {
+            width: 100%;
+            appearance: none;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .select-wrapper::after {
+            content: "▼";
+            font-size: 13px;
+            color: #333;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .back-icon-container {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+        }
+
+        .back-icon {
+            font-size: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-icon:hover {
+            color: #0056b3;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 14px;
+            color: #6c757d; /* Muted gray */
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #007bff; /* Blue link */
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+         /* Styling for Aggregate Technologies header */
+         .text-center.mt-sm-5 {
+            margin-top: 3rem;
+        }
+
+        .container-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .auth-logo img {
+            max-height: 100px;
+            width: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-wrapper">
+        <div>
+            <a class="d-inline-block auth-logo" href="/">
+                <img src="/static/LogoWhite.png" alt="Logo">
+            </a>
+        </div>
+    <!--<div class="logo-container">
+        <img src="{{ url_for('static', filename='Logo.png') }}">
+    </div>-->
+    <div class="back-icon-container">
+        <a href="{{ url_for('index') }}" class="back-icon" title="Go Back">←</a>
+    </div>
+    
+    <div class="account-container">
+        <h5>Welcome Back!</h5>
+        <h6>Please sign-up your Account</h6>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('add_record') }}" autocomplete="off">
+            <div class="form-group">
+                <label>User Name</label>
+                <input type="text" class="form-control" name="username" required>
+            </div>
+            <!--<div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>-->
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <div class="select-wrapper">
+                    <select class="form-control" name="role" required>
+                        <option value="">Select Role</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Developer">Developer</option>
+                        <option value="HR">HR</option>
+                        <option value="User">User</option>
+                    </select>
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <label>Role</label>
+                <div class="select-wrapper">
+                    <select class="form-control" name="role" required>
+                        <option value="">Select Role</option>
+                        {% for roles in role %}
+                            <option value="{{ roles }}">{{ roles }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>-->
+            
+            <div>
+                <input type="submit" class="btn-primary" value="Create">
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const flashMessages = document.querySelectorAll('.alert');
+    
+            flashMessages.forEach((alert) => {
+                setTimeout(() => {
+                    alert.classList.remove('show'); // Hide the alert
+                    alert.classList.add('fade');   // Add fade-out effect
+                    setTimeout(() => alert.remove(), 300); // Remove element after fade-out
+                }, 3000); // 3 seconds delay
+            });
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="footer">
+        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
+    </div>
+    </div>
+</body>
+</html>

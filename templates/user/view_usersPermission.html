@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            height: 12vh;
+            padding: 10px 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .menu-container {
+            cursor: pointer;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            color: black;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .logo {
+            height: 35px;
+        }
+
+        .logout-container {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+
+        .logout-icon {
+            font-size: 20px;
+            color: black; /* Red color for logout */
+        }
+
+        .logout-icon:hover {
+            color: black; /* Darker red on hover */
+        }
+
+        /* Dropdown Menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            left: 5px;
+            width: 250px;
+            z-index: 1000;
+            display: none;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #343a40;
+            font-size: 1rem;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 60%;
+            max-width: 300px;
+        }
+   
+        .cancel-icon {
+            font-size: 12px;
+            position: absolute;
+            left: 550px;
+            top: 58%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: black;
+            border: 2px solid black;
+            padding: 4px;
+            border-radius: 2px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cancel-icon:hover {
+            color: #0056b3;
+        }
+        /* User Card */
+        .user-card {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: 75%;
+            height: 95%;
+            position: relative;
+        }
+
+        .user-initial {
+            width: 50px;
+            height: 50px;
+            border-radius: 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: normal;
+            color: white;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        /* Dynamic Background Colors */
+        .color-1 { background-color: #6c757d; }
+        .color-2 { background-color: #007bff; }
+        .color-3 { background-color: #28a745; }
+        .color-4 { background-color: #ffc107; }
+
+        .user-details {
+            flex-grow: 1;
+        }
+
+        .user-role {
+            color: gray;
+            font-size: 14px;
+        }
+
+        .user-details p {
+            margin-bottom: 2px;  /* ✅ Adjusted spacing */
+            font-size: 14px;
+        }
+
+        .actions {
+        position: absolute;
+        top: 3px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        gap: 15px; /* Ensures equal spacing between icons */
+        }
+
+        /* Adjust icon size and alignment */
+       .action-icon {
+       font-size: 18px;
+       color: #007bff;
+       cursor: pointer;
+       transition: color 0.3s;
+       }
+
+       .action-icon:hover {
+       color: #0056b3;
+       }
+
+       .dropdown-toggle {
+       padding: 0;
+       border: none;
+       background: none;
+       font-size: 18px;
+       color: #007bff;
+       }
+
+       .dropdown-toggle:hover {
+       color: #0056b3;
+       }
+
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .back-icon-container {
+            position: absolute;
+            top: 90px;
+            left: 20px;
+        }
+
+        .back-icon {
+            font-size: 14px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .back-icon:hover {
+            color: black;
+        }
+        .blurred {
+            filter: blur(2px); 
+            opacity: 0.6; 
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <!-- Menu Icon -->
+        <div class="menu-container" onclick="toggleDropdown()">
+            <i class="fas fa-bars menu-icon"></i>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <a href="{{ url_for('dashboard') }}">Home</a>
+                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                {% if session['role'] in ['Admin', 'Manager'] %}
+                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                {% endif %}
+                <a href="{{ url_for('roles_permission') }}">Exit</a>
+                
+            </div>
+        </div>
+
+        <!-- Logo Centered -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
+        </div>
+
+        <!-- Logout Icon -->
+        <div class="logout-container">
+            <a href="{{ url_for('index') }}" title="Log Out">
+                <i class="fas fa-sign-out-alt logout-icon"></i>
+            </a>
+        </div>
+    </header>
+    
+    <div class="back-icon-container">
+        <a href="{{ url_for('roles_permission') }}" class="back-icon" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+    <div class="container d-flex justify-content-center mb-3">
+        <a href="{{ url_for('add_record') }}" class="btn btn-success mr-3">
+            <i class="fas fa-plus"></i> Add New
+        </a>
+        <form action="/view_usersPermission" method="get" class="d-flex position-relative">
+            <input type="text" name="query" class="form-control search-input" placeholder="Search" value="{{ query }}">
+            <button type="submit" class="btn btn-primary ml-2">
+                <i class="fas fa-search"></i> Search
+            </button>
+            <i class="fas fa-times cancel-icon" id="cancel-search"></i>
+        </form>
+    </div>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="row">
+            {% for user in users %}
+            <div class="col-md-6 d-flex justify-content-center">  <!-- Center alignment -->
+                <div class="user-card {% if user['status'] == 'Inactive' %}blurred{% endif %}">
+                    <!-- Profile Initials -->
+                    <div class="user-initial {{ loop.cycle('color-1', 'color-2', 'color-3', 'color-4') }}">
+                        {{ user['username'][0:2].upper() }}
+                    </div>
+                    <!-- User Details -->
+                    <div class="user-details">
+                        <p><strong>Assigned {{ user['username'] }} to access {{ user['rolebase_gptname'].split('|')[-1] }} bot </strong></p>
+                        <p>{{ user['email'] }}</p>
+                        <p class="user-role">{{ user['role'] }}</p>
+                        <p class="user-status 
+                        {% if user['status'] == 'Active' %}text-success{% elif user['status'] == 'Inactive' %}text-danger{% endif %}">
+                        {{ user['status'] }}
+                        </p>
+                    </div>
+    
+                    <!-- Actions -->
+                    <div class="actions">
+                        <a href="{{ url_for('edit_user', user_id=user['id']) }}"><i class="fas fa-edit action-icon"></i></a>
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton{{ user['id'] }}"
+                                data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: none;">
+                            </button>
+                        
+                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton{{ user['id'] }}">
+                                <li>
+                                    <form action="{{ url_for('activate_user', user_id=user['id']) }}" method="POST">
+                                        <button type="submit" class="dropdown-item text-success">
+                                            <i class="fas fa-check-circle"></i> Activate
+                                        </button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('deactivate_user', user_id=user['id']) }}" method="POST">
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="fas fa-times-circle"></i> Deactivate
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            {% if loop.index % 2 == 0 %}
+        </div><div class="row">
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cancelIcon = document.getElementById('cancel-search');
+            const searchInput = document.querySelector('.search-input');
+    
+            if (cancelIcon && searchInput) {
+                cancelIcon.addEventListener('click', function () {
+                    searchInput.value = ''; // Clear the input field
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('query'); // Remove the search query from the URL
+                    window.location.href = url.toString(); // Reload page with updated URL
+                });
+            }
+        });
+    </script>
+
+<script>
+    function toggleDropdown() {
+        const dropdown = document.getElementById('dropdown-menu');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close dropdown menu when clicking outside
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById('dropdown-menu');
+        const menuContainer = document.querySelector('.menu-container');
+        if (!menuContainer.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+       const flashMessages = document.querySelectorAll('.alert');
+
+    // Set a timer for each message to auto-dismiss after 5 seconds
+    flashMessages.forEach((alert) => {
+       setTimeout(() => {
+       alert.classList.remove('show'); // Hide the alert
+       alert.classList.add('fade');   // Add fade-out effect
+       setTimeout(() => alert.remove(), 150); // Remove element after fade-out
+       }, 3000); // 3000ms = 3 seconds
+    });
+});
+</script>
+</body>
+</html>

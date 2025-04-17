@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            flex-direction: column; /* Stack the logo and container */
+        }
+        .auth-logo {
+            text-align: center; /* Center the logo */
+            margin-bottom: 20px; /* Add space between logo and login container */
+        }
+        .auth-logo img {
+            max-height: 40px;
+            width: auto; /* Maintain aspect ratio */
+        }
+        .login-container {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            min-height: 450px;
+            width: 50%;
+            text-align: center;
+        }
+        .login-container h5 {
+            color: #007bff; /* Blue color */
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            text-align: left;
+            display: block;
+        }
+        .form-control {
+            height: 37px;
+            border-radius: 5px;
+            padding-left: 40px;
+            background-color: #f5f5f5;
+            border: 1px solid #ced4da;
+            margin-bottom: 20px; /* Add gap between form fields */
+        }
+        .form-control::placeholder {
+            color: #adb5bd;
+        }
+        .btn-update {
+            background-color: #4022e9;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            font-weight: normal;
+            height: 35px;
+            width: 35%;
+        }
+        .btn-update:hover {
+            background-color: #4022e9; /* Remove hover effect */
+        }
+        .btn-cancel {
+            background-color: transparent;
+            color: #d9534f;
+            border: 2px solid #2c11d89c;
+            border-radius: 5px;
+            height: 35px;
+            width: 35%;
+            font-weight: bold;
+        }
+        .btn-cancel:hover {
+            background-color: transparent; /* Remove hover effect */
+            color: #d9534f;
+        }
+        .btn-cancel a {
+            color: #000000;
+            text-decoration: none;
+        }
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .select-wrapper select {
+            width: 100%;
+            appearance: none;
+            padding:  5px 30px 10px 40px;
+            font-size: 15px;
+        }
+        .select-wrapper::after {
+            content: "▼";
+            font-size: 14px;
+            color: #333;
+            position: absolute;
+            padding:  10px 30px 10px 40px;
+            right: 15px;
+            top: 50%; 
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+            font-size: 14px;
+            color: #6c757d; /* Muted gray */
+        }
+        .footer a {
+            text-decoration: none;
+            color: #007bff; /* Blue link */
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .back-icon-container {
+            position: absolute;
+            top: 50px;
+            left: 30px;
+        }
+
+        .back-icon {
+            font-size: 14px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .back-icon:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-logo">
+        <img src="/static/LogoWhite.png"> <!-- Add your logo path here -->
+    </div>
+
+    <div class="back-icon-container">
+        <a href="{{ url_for('view_usersPermission') }}" class="back-icon" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
+    <div class="login-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <!-- Username -->
+            <div class="form-group position-relative">
+                <label for="username">User Name</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user['username'] }}" required>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group position-relative">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user['email'] }}" required>
+            </div>
+
+            <!-- Role -->
+            <div class="form-group position-relative">
+                <label for="role">Role</label>
+                <div class="select-wrapper">
+                    <select class="form-control" id="role" name="role" required>
+                        <option value="Admin" {% if user['role'] == 'Admin' %}selected{% endif %}>Admin</option>
+                        <option value="Manager" {% if user['role'] == 'Manager' %}selected{% endif %}>Manager</option>
+                        <option value="Developer" {% if user['role'] == 'Developer' %}selected{% endif %}>Developer</option>
+                        <option value="HR" {% if user['role'] == 'HR' %}selected{% endif %}>HR</option>
+                        <option value="User" {% if user['role'] == 'User' %}selected{% endif %}>User</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Business Function & GPT Name Dropdown -->
+            <div class="form-group">
+                <label for="rolebase_gptname">Role & GPT Name</label>
+                <div class="select-wrapper">
+                    <select id="rolebase_gptname" name="rolebase_gptname" class="form-control" required>
+                        <option value="" {% if not user['rolebase_gptname'] %}selected{% endif %}>Select Role & GPT</option>
+
+                        {% for role, gpt in business_functions %}
+                            <option value="{{ role }}|{{ gpt }}" 
+                                {% if user['rolebase_gptname'] == role + '|' + gpt %}selected{% endif %}>
+                                {{ role }} - {{ gpt }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-cancel"><a href="{{ url_for('view_usersPermission') }}">Cancel</a></button>
+                <button type="submit" class="btn btn-update">Update User</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("rolebase_gptname").addEventListener("change", function() {
+        var selectedValue = this.value; 
+        if (selectedValue) {
+          this.setAttribute("value", selectedValue);  // Ensuring the selected value is properly set
+        }
+        });
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+           const flashMessages = document.querySelectorAll('.alert');
+
+        // Set a timer for each message to auto-dismiss after 5 seconds
+        flashMessages.forEach((alert) => {
+           setTimeout(() => {
+           alert.classList.remove('show'); // Hide the alert
+           alert.classList.add('fade');   // Add fade-out effect
+           setTimeout(() => alert.remove(), 150); // Remove element after fade-out
+           }, 3000); // 3000ms = 3 seconds
+        });
+    });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="footer">
+        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
+    </div>
+</body>
+</html>
