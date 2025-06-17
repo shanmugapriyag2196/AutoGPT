@@ -17,8 +17,8 @@ from langchain.chains import LLMChain
 load_dotenv()
 
 # Initialize the LLM and conversation
-#llm = ChatOpenAI(model_name="gpt-4", temperature=0.7, openai_api_key=os.getenv("OPENAI_API_KEY"))
-llm = ChatOpenAI(temperature=0,model_name="llama3-70b-8192",openai_api_base="https://api.groq.com/openai/v1",openai_api_key=os.getenv("GROQ_API_KEY"))
+llm = ChatOpenAI(model_name="gpt-4", temperature=0.7, openai_api_key=os.getenv("OPENAI_API_KEY"))
+#llm = ChatOpenAI(temperature=0,model_name="llama3-70b-8192",openai_api_base="https://api.groq.com/openai/v1",openai_api_key=os.getenv("GROQ_API_KEY"))
 #llm = ChatOpenAI(model_name="mistralai/Mixtral-8x7B-Instruct-v0.1",openai_api_key=os.getenv("TOGETHER_API_KEY"),openai_api_base="https://api.together.xyz/v1",temperature=0.7)
 
 memory = ConversationBufferMemory(k=5)
