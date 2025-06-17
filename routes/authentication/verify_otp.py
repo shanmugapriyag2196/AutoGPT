@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
-from flask_mail import Mail, Message, mail
+#from flask_mail import Mail, Message, mail
 import time
 from models import init_sqlite_db4
 from . import auth_bp
+from flask_mail import Message
+from extension import mail
+
 
 @auth_bp.route('/verify_otp', methods=['GET', 'POST'])
 def verify_otp():
@@ -13,10 +16,10 @@ def verify_otp():
     # Step 3: Check if the OTP exists and has not expired
     if not otp or not otp_expiry_time:
         flash("OTP has expired or is not valid.", "danger")
-        return redirect(url_for('forgot_password'))
+        return redirect(url_for('auth.forgot_password'))
     if time.time() > otp_expiry_time:
         flash("OTP has expired.", "danger")
-        return redirect(url_for('forgot_password'))
+        return redirect(url_for('auth.forgot_password'))
     # Step 4: Validate OTP
     if entered_otp == otp:
         # OTP is correct, allow the user to reset the password
@@ -38,7 +41,7 @@ def verify_otp():
         session.pop('otp', None)
         session.pop('otp_expiry', None)
         session.pop('user_email', None)
-        return redirect(url_for('index'))
+        return redirect(url_for('auth.index'))
     else:
         flash("Invalid OTP. Please try again.", "danger")
-        return redirect(url_for('verify_otp'))
+        return redirect(url_for('authentication/verify_otp'))

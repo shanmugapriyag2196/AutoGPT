@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import sqlite3
+import sqlite3, os
 from models import init_sqlite_db4
 from . import user_bp
 
@@ -8,7 +8,7 @@ def my_profile():
     # Ensure the user is logged in
     if 'email' not in session:
         flash("You need to log in to access this page.", "danger")
-        return redirect(url_for('index'))
+        return redirect(url_for('auth.index'))
     # Get the logged-in user's email from the session
     email = session['email']
     if request.method == 'POST':
@@ -39,9 +39,9 @@ def my_profile():
         user = cur.fetchone()
     if not user:
         session.clear()
-        return redirect(url_for('index'))
+        return redirect(url_for('auth.index'))
     # Pass the user data to the template
-    return render_template('my_profile.html', user={
+    return render_template('user/my_profile.html', user={
         'username': user[0],
         'email': user[1],
         'role': user[2],

@@ -1,202 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Run AutoGPT</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Run AutoGPT</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: white;
+    }
 
-        .container {
-            width: 700px;
-            height: 550px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: none;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
+    .container {
+      width: 750px;
+      height: 560px;
+      background-color: rgb(239, 245, 246);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
 
-        h4 {
-            text-align: start;
-            margin-bottom: 5px;
-            margin-top: 2px;
-        }
-        
-        .refresh-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: #007bff;
-        }
-        #aiResponse {
-            margin-top: 10px;
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 10px;
-            overflow-y: auto;
-            height: 400px;
-            width: 670px;
-            
-        }
-        .input-area {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-        }
+    .header {
+      background-color: #afceee;
+      color: black;
+      padding: 16px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+    }
 
-        .footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+    .refresh-button {
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: black;
+      font-weight: 600;
+    }
 
-        /* Upload Icon */
-        .upload-area {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 20px;
-            color: #007bff;
-            padding: 10px;
-        }
+    #aiResponse {
+      margin: 10px auto;
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 20px;
+      overflow-y: auto;
+      height: 480px;
+      width: 680px;
+      border: 1px solid #dddddd;
+      line-height: 1.6; 
+      white-space: pre-wrap;
+    }
 
-        .upload-area input {
-            display: none;
-        }
+    .input-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      padding: 5px;
+    }
 
-        .upload-area:hover {
-            color: #007bff;
-        }
-    
-        #userInput {
-            flex: 1;
-            height: 50px;
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            resize: none;
-            margin: 0 10px;
-            flex: 1;
-            height: 50px;
-            padding: 10px;
-            border: none;
-            font-size: 14px;
-            resize: none;
-            margin: 0 10px;
-            outline: none; /* Prevents blue outline */
-        }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+    }
 
-        /* Ensures the input box does NOT turn black */
-        #userInput:hover, 
-        #userInput:focus {
-            background-color: white;
-            color: black;
-            border: 1px solid white;
-        }
-        
-        .back-icon-container {
-            position: absolute;
-            top: 40px;
-            left: 20px;
-        }
+    .upload-area {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 20px;
+      color: #007bff;
+      padding: 10px;
+    }
 
-        .back-icon {
-            font-size: 18px;
-            color: black;
-            text-decoration: none;
-        }
+    .upload-area input {
+      display: none;
+    }
 
-        .back-icon:hover {
-            color: black;
-        }
+    #userInput {
+      flex: 1;
+      height: 50px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      resize: none;
+      margin: 0 10px;
+      outline: none;
+    }
 
-        .run-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 28px;
-            color: #007bff;
-        }
+    .back-icon-container {
+      position: absolute;
+      top: 40px;
+      left: 20px;
+    }
 
-        .run-button:hover {
-            color: #007bff;
-        }
-    </style>
+    .back-icon {
+      font-size: 18px;
+      color: black;
+      text-decoration: none;
+    }
+
+    .run-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 28px;
+      color: #007bff;
+    }
+
+    .run-button:hover {
+      color: #0056b3;
+    }
+
+    /* Help Modal */
+    #helpModal {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 999;
+      max-width: 500px;
+    }
+
+    #helpModal h4 {
+      margin-top: 0;
+    }
+
+    #helpContent {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+
+    #helpModal button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #helpModal button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-    <div class="back-icon-container">
-        <a href="javascript:history.back();" class="back-icon" title="Go Back">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-    </div>
-    <div class="container">
-        <h4>{{ prompt_data.description }}</h4>
-        <button class="refresh-button" onclick="window.location.reload();">&#x21bb;</button>
-        <pre id="aiResponse">Please Upload the {{ prompt_data.description }} File here and Get the Result</pre>
 
-        <div class="footer">
-            <div class="input-area">
-            <label class="upload-area">
-                <label for="fileInput"><i class="fas fa-file-upload"></i></label>
-                <input type="file" id="fileInput">
-            </label>
+  <div class="back-icon-container">
+    <a href="javascript:history.back();" class="back-icon" title="Go Back">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+  </div>
 
-            <textarea id="userInput" placeholder="Type or upload content..."></textarea>
-
-            <button class="run-button" onclick="processInput()">
-                <i class="fas fa-play-circle"></i>
-            </button>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      {{ prompt_data.description }}
+      <button class="refresh-button" onclick="window.location.reload();">&#x21bb;</button>
     </div>
 
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('userInput').value = e.target.result;
-                };
-                reader.readAsText(file);
-            }
-        });
+    <pre id="aiResponse">Upload the {{ prompt_data.description }} File to Extract and display results.</pre>
 
-        async function processInput() {
-            const userInput = document.getElementById('userInput').value;
-            if (!userInput.trim()) return;
+    <div class="footer">
+      <div class="input-area">
+        <label class="upload-area">
+          <label for="fileInput"><i class="fas fa-file-upload"></i></label>
+          <input type="file" id="fileInput">
+        </label>
 
-            const formData = new FormData();
-            formData.append('text', userInput);
-            formData.append('prompt_id', "{{ prompt_data.id }}");
+        <textarea id="userInput" placeholder="Type or upload content..."></textarea>
+        <i class="fas fa-question-circle"
+          id="helpIcon"
+          data-id="{{ prompt_data.id }}"
+          title="Click to view help"
+          style="font-size: 20px; color: #007bff; cursor: pointer;"></i>
 
-            const response = await fetch('/process-text', { method: 'POST', body: formData });
-            const data = await response.json();
-            
-            document.getElementById('aiResponse').textContent = data.ai_response || "Error processing request.";
-        }
-    </script>
+        <button class="run-button" onclick="processInput()">
+          <i class="fas fa-play-circle"></i>
+        </button>
+        <button class="run-button" onclick="toggleMic()" id="micButton" title="Click to speak">
+          <i class="fas fa-microphone"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('userInput').value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    async function processInput() {
+      const userInput = document.getElementById('userInput').value;
+      if (!userInput.trim()) return;
+
+      const formData = new FormData();
+      formData.append('text', userInput);
+      formData.append('prompt_id', "{{ prompt_data.id }}");
+
+      const response = await fetch('/process-text', { method: 'POST', body: formData });
+      const data = await response.json();
+      
+      document.getElementById('aiResponse').textContent = data.ai_response || "Error processing request.";
+    }
+  </script>
+
+  <script>
+    let recognizing = false;
+    let recognition;
+
+    // Initialize Speech Recognition
+    function initSpeechRecognition() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert("Your browser does not support voice recognition. Try using Google Chrome.");
+        return;
+      }
+
+      recognition = new webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        recognizing = true;
+        document.getElementById("micButton").style.color = "red";
+        document.getElementById("micButton").title = "Listening...";
+      };
+
+      recognition.onend = () => {
+        recognizing = false;
+        document.getElementById("micButton").style.color = "#007bff";
+        document.getElementById("micButton").title = "Click to speak";
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+        const userInputBox = document.getElementById("userInput");
+        userInputBox.value = userInputBox.value + (userInputBox.value ? " " : "") + transcript;
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        recognizing = false;
+        document.getElementById("micButton").style.color = "#007bff";
+      };
+      }
+
+      // Toggle microphone on/off
+      function toggleMic() {
+        if (!recognition) initSpeechRecognition();
+
+      if (recognizing) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+      }
+
+      // Initialize on load
+      window.onload = initSpeechRecognition;
+</script>
+      <script>
+  document.getElementById("helpIcon").addEventListener("click", async function () {
+    const promptId = this.getAttribute("data-id");
+
+    try {
+      const response = await fetch(`/get-help-text/${promptId}`);
+      if (!response.ok) throw new Error("Failed to fetch");
+      const data = await response.json();
+
+      // Set help text into the AI response section
+      document.getElementById("aiResponse").textContent = data.help_text || "No help text available.";
+    } catch (err) {
+      document.getElementById("aiResponse").textContent = "Error loading help text.";
+      console.error(err);
+    }
+  });
+</script>
 
 </body>
 </html>

@@ -10,4 +10,4 @@ def deactivate_user(user_id):
         cur.execute("UPDATE user4 SET status = 'Inactive' WHERE id = ?", (user_id,))
         conn.commit()
     flash("User deactivated successfully!", "danger")
-    return redirect(url_for('view_usersPermission'))
+    return redirect(url_for('user.view_usersPermission'))

@@ -1,11 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, current_app
 import sqlite3
 import os
 import time
 import datetime
 from datetime import date
-import get_next_version
-import config
+from datetime import datetime
+from config import Config
 from models import init_sqlite_db1, init_sqlite_db4
 from . import prompt_bp
 
@@ -16,7 +16,7 @@ def create_autogpt():
     # Ensure user is logged in
     if 'email' not in session:
         flash("Please log in to continue.", "danger")
-        return redirect(url_for('index'))  # Redirect to index if not logged in
+        return redirect(url_for('auth.index'))  # Redirect to index if not logged in
 
     email = session['email']  # Get logged-in user's email
 
@@ -29,7 +29,7 @@ def create_autogpt():
     if not user1:
         session.clear()
         flash("User not found. Please log in again.", "danger")
-        return redirect(url_for('index'))  # Ensure user is logged in
+        return redirect(url_for('auth.index'))  # Ensure user is logged in
 
     username, role = user1  # Extract user details
 
@@ -40,30 +40,38 @@ def create_autogpt():
         description = request.form.get('description')
         prompt = request.form.get('prompt')
         template_file = request.files.get('template_file')
-        new_version = get_next_version()
+        version = request.form.get('version')
         input_expected = request.form.get('input_expected')
         status = "Active"
+        help_text = request.form.get('help_text')
 
         # Save uploaded file and get its path
         template_file_path = None
         if template_file and template_file.filename != '':
-            template_file_path = os.path.join(prompt_bp.config['UPLOAD_FOLDER'], template_file.filename)
+            upload_folder = current_app.config['UPLOAD_FOLDER']
+            os.makedirs(upload_folder, exist_ok=True)
+            template_file_path = os.path.join(upload_folder, template_file.filename)
             template_file.save(template_file_path)
 
         try:
             # Insert data into autogpt1.db with the correct username and role
             with sqlite3.connect('autogpt1.db') as conn:
                 cur = conn.cursor()
+                try:
+                   cur.execute("ALTER TABLE autogpt1 ADD COLUMN help_text TEXT")
+                except sqlite3.OperationalError:
+                   pass
+
                 cur.execute(''' 
                     INSERT INTO autogpt1
-                    (business_function, gpt_name, description, prompt, template_file, timestamp, username, role, version, input_expected, status) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
-                ''', (business_function, gpt_name, description, prompt, template_file_path, datetime.now().strftime('%d-%m-%Y'), username, role, new_version, input_expected, status))
+                    (business_function, gpt_name, description, prompt, template_file, timestamp, username, role, version, input_expected, status, help_text) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) 
+                ''', (business_function, gpt_name, description, prompt, template_file_path, datetime.now().strftime('%d-%m-%Y'), username, role, version, input_expected, status, help_text))
                 conn.commit()
                 flash('AutoGPT created and stored in the database successfully!', 'success')
         except Exception as e:
             flash(f'Error saving AutoGPT: {str(e)}', "danger")
 
-        return render_template('create_autogpt.html', functions=functions)  # Render the same page with flash message
+        return render_template('prompt/create_autogpt.html', functions=functions)  # Render the same page with flash message
 
-    return render_template('create_autogpt.html', functions=functions)
+    return render_template('prompt/create_autogpt.html', functions=functions)

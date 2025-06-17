@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import sqlite3
 from functools import wraps
-from models import init_sqlite_db4
+from models import init_sqlite_db4, init_sqlite_db1
 from . import user_bp
 
 def role_required(allowed_roles):
@@ -22,7 +22,9 @@ def edit_user(user_id):
         username = request.form['username']
         email = request.form['email']
         role = request.form['role']
-        rolebase_gptname = request.form['rolebase_gptname'] 
+        #rolebase_gptname = request.form['rolebase_gptname'] 
+        rolebase_gptname_list = request.form.getlist('rolebase_gptname')
+        rolebase_gptname = ','.join(rolebase_gptname_list)
 
         with sqlite3.connect('user4.db') as conn:
             cur = conn.cursor()
@@ -32,7 +34,7 @@ def edit_user(user_id):
             conn.commit()
 
         flash("User updated successfully!", "success")
-        return redirect(url_for('view_usersPermission'))
+        return redirect(url_for('user.view_usersPermission'))
 
     # ✅ Fetch user details from user4.db
     with sqlite3.connect('user4.db') as conn:
@@ -50,6 +52,6 @@ def edit_user(user_id):
         business_functions = [(row['business_function'], row['gpt_name'])
                               for row in cur.fetchall()]
 
-    return render_template('edit_user.html',
+    return render_template('user/edit_user.html',
                            user=user,
                            business_functions=business_functions)

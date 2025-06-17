@@ -1,0 +1,18 @@
+Extract the following details:
+1.Log Parsing
+   1.Time Stamp                
+   2.Status Code                 
+   3.Time_Taken                
+   4.URL and Method                 
+2.Detailed Error Reports              
+   1.404 Error Details                 
+   2.500 Error Details                 
+3.Anomaly Detection             
+4.Performance Metrics            
+   1.Maximum Response Times                 
+   2.Minimum Response Times
+   3.Average Response Times                
+5.Trend Analysis                
+6.Report Generation                
+7.Total Count of 404 Error                
+8.Total Count of 500 Error

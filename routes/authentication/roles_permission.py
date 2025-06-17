@@ -17,4 +17,4 @@ def roles_permission():
         users = [] 
     # Pass the user's role and users to the template
     user_role = session.get('role', None)  # Get role from session
-    return render_template('roles_permission.html')
+    return render_template('authentication/roles_permission.html')

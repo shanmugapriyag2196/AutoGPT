@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import sqlite3
+import sqlite3, os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from extension import db
 
 app = Flask(__name__)  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///responses.db'  # Use SQLite
@@ -16,8 +17,7 @@ class MeetingResponse(db.Model):
     ai_response = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
 
-
-def init_sqlite_db4():           # Database setup function
+def init_sqlite_db4():         
     with sqlite3.connect('user4.db') as conn:
         conn.execute("""
         CREATE TABLE IF NOT EXISTS user4(
@@ -33,7 +33,7 @@ def init_sqlite_db4():           # Database setup function
     conn.close()
 init_sqlite_db4()
 
-def init_sqlite_db6():           # Database setup function
+def init_sqlite_db6():           # Database setup function   
     with sqlite3.connect('user2.db') as conn:
         conn.execute("""
         CREATE TABLE IF NOT EXISTS user2(
@@ -60,7 +60,8 @@ def init_sqlite_db1():
             role TEXT NOT NULL,
             version TEXT NOT NULL,
             input_expected TEXT NOT NULL,
-            status
+            status,
+            help_text
         )
         """)
     conn.close()

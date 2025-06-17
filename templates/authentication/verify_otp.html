@@ -12,7 +12,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #eef2f7;
             font-family: Arial, sans-serif;
             flex-direction: column; /* Stack the logo and container */
         }
@@ -147,7 +147,7 @@
         {% endwith %}
 
         <!-- OTP Form -->
-        <form method="POST" action="{{ url_for('verify_otp') }}">
+        <form method="POST" action="{{ url_for('auth.verify_otp') }}">
             <div class="form-group">
                 <label for="otp">Enter OTP</label>
                 <input type="text" id="otp" name="otp" class="form-control" placeholder="Enter OTP" required>

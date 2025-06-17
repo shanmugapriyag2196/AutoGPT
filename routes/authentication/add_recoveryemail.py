@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
-import sqlite3
-from flask_mail import Mail, Message, mail
+from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint, current_app
+import sqlite3, os
+#from flask_mail import Mail, Message, mail
 from models import init_sqlite_db6, init_sqlite_db4
 from . import auth_bp
+from flask_mail import Message
+from extension import mail
+
 
 @auth_bp.route('/add_recoveryemail', methods=['GET', 'POST'])
 def add_recoveryemail():
@@ -20,7 +23,7 @@ def add_recoveryemail():
             try:
                 msg = Message(
                     subject="Welcome to AutoGPT App",
-                    sender=auth_bp.config['MAIL_USERNAME'],
+                    sender=current_app.config['MAIL_USERNAME'],
                     recipients=[recovery_email],
                     html=f"""
                     <html>
@@ -38,16 +41,17 @@ def add_recoveryemail():
                 flash(f'Failed to send email: {str(email_error)}', 'danger')
         except Exception as db_error:
             flash(f"Error in registration: {str(db_error)}", 'danger')
-        return redirect(url_for("add_recoveryemail"))
+        return redirect(url_for("auth.add_recoveryemail"))
+
     with sqlite3.connect('user4.db') as conn:
         cur = conn.cursor()
         cur.execute("SELECT email, password FROM user4 WHERE email = ?", (session['email'],))
         user = cur.fetchone()
     if not user:
         session.clear()
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard.dashboard'))
     # Pass the user data to the template
-    return render_template('add_recoveryemail.html', user={
+    return render_template('authentication/add_recoveryemail.html', user={
         'email': user[0],
         'password': user[1]
     })

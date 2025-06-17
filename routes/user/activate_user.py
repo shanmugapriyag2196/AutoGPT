@@ -12,4 +12,4 @@ def activate_user(user_id):
         cur.execute("UPDATE user4 SET status = 'Active' WHERE id = ?", (user_id,))
         conn.commit()
     flash("User activated successfully!", "success")
-    return redirect(url_for('view_usersPermission'))
+    return redirect(url_for('user.view_usersPermission'))

@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import sqlite3
-from models import init_sqlite_db4
+import sqlite3, os
 from . import auth_bp
 
 @auth_bp.route('/', methods=['GET', 'POST'])
@@ -9,7 +8,8 @@ def index():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        with sqlite3.connect('app/user4.db') as conn:
+       
+        with sqlite3.connect('user4.db') as conn:
             cur = conn.cursor()
             cur.execute("SELECT * FROM user4 WHERE email = ? AND password = ?", (email, password))
             user = cur.fetchone()
@@ -19,4 +19,4 @@ def index():
             return redirect(url_for('dashboard.dashboard'))
         else:
             flash("Invalid email or password.", "danger")
-    return render_template('index.html')
+    return render_template('authentication/index.html')

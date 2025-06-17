@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-import sqlite3
+import sqlite3, os
 from functools import wraps
 from models import init_sqlite_db4
 from . import user_bp
@@ -10,7 +10,7 @@ def role_required(allowed_roles):
         def wrapper(*args, **kwargs):
             if 'role' not in session or session['role'] not in allowed_roles:
                 flash("You do not have permission to access this page.", "danger")
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('dashboard.dashboard'))
             return func(*args, **kwargs)
         return wrapper
     return decorator
@@ -41,4 +41,4 @@ def view_usersPermission():
             
     except Exception as e:
         users = []
-    return render_template('view_usersPermission.html', users=users, query=query)
+    return render_template('user/view_usersPermission.html', users=users, query=query)

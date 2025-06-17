@@ -1,166 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roles</title>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;   
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f8f9fa;
-        }
-
-        .role {
-            padding: 20px;
+            background-color: #eef2f7;
+            color: #333;
         }
 
         .header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            background-color: #fff;
-            height: 12vh;
-            padding: 10px 20px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .menu-container {
-            cursor: pointer;
-            position: absolute;
-            left: 20px;
-            top: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .menu-icon {
-            font-size: 20px;
+        .menu-icon, .logout-icon {
+            font-size: 22px;
             color: black;
+            cursor: pointer;
         }
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
+
+        .dropdown-menu {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none;
+            width: 220px;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 6px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
         }
 
         .logo {
             height: 35px;
         }
-        .logout-container {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-        }
-
-        .logout-icon {
-            font-size: 20px;
-            color: black; /* Red color for logout */
-        }
-
-        .logout-icon:hover {
-            color: black; /* Darker red on hover */
-        }
-        .dropdown-menu {
-            position: absolute;
-            top: 50px;
-            left: 5px;
-            width: 250px;
-            z-index: 1000;
-            display: none;
-            background-color: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .dropdown-menu a {
-            display: block;
-            padding: 10px 20px;
-            text-decoration: none;
-            color: #343a40;
-            font-size: 1rem;
-        }
-
-        .dropdown-menu a:hover {
-            background-color: #f8f9fa;
-        }
-       
-        .title {
-            font-size: 17px;
-            font-weight: bold;
-            text-align: center;
-        }
 
         .cards {
             display: flex;
-            justify-content: flex-start;
-            margin-top: 40px;
+            justify-content: center;
             flex-wrap: wrap;
-            gap: 4%;
+            gap: 30px;
+            padding: 40px;
         }
 
         .card {
-            background-color: #f8f9fa;
-            width: 15%;
-            padding: 10px;
-            text-align: left;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 220px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
             cursor: pointer;
+            text-align: center;
         }
 
-        .card:not(:last-child) {
-            margin-right: 4%;
-        }
-
-        .card h3 {
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            padding-left: 20px;
+        .card:hover {
+            transform: translateY(-5px);
         }
 
         .card-icon {
-            font-size: 30px;
-            margin-bottom: 20px;
+            font-size: 40px;
+            margin-bottom: 10px;
             color: #007bff;
-            padding-left: 20px;
         }
 
-        .disabled {
-            pointer-events: none;
-            opacity: 0.6;
+        .card h3 {
+            font-size: 18px;
+            font-weight: 600;
         }
 
         .footer {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            text-align: right;
+            text-align: end;
+            padding: 10px;
             font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
             color: #6c757d;
         }
 
         .footer a {
-            text-decoration: none;
             color: #007bff;
+            text-decoration: none;
         }
 
         .footer a:hover {
             text-decoration: underline;
         }
+
         .back-icon-container {
             position: absolute;
-            top: 90px;
+            top: 100px;
             left: 20px;
         }
 
@@ -177,91 +136,80 @@
 </head>
 
 <body>
-    <!-- Header Section -->
     <header class="header">
-        <div class="menu-container" onclick="toggleDropdown()">
+        <div onclick="toggleDropdown()">
             <i class="fas fa-bars menu-icon"></i>
-            <div id="dropdown-menu" class="dropdown-menu">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
-                <a href="{{ url_for('my_profile') }}">My Profile</a>
-                <!--<a href="{{ url_for('add_recoveryemail') }}">Settings</a>-->
-                {% if session['role'] in ['Admin', 'Manager'] %}
-                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
-                {% endif %}
-                <a href="{{ url_for('dashboard') }}">Exit</a>
-            </div>
         </div>
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
-        </div>
-        <div class="logout-container">
-            <a href="{{ url_for('index') }}" title="Log Out">
-                <i class="fas fa-sign-out-alt logout-icon"></i>
-            </a>
+
+        <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
+
+        <a href="{{ url_for('auth.index') }}" title="Log Out">
+            <i class="fas fa-sign-out-alt logout-icon"></i>
+        </a>
+
+        <div id="dropdown-menu" class="dropdown-menu">
+            <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+            <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+            <a href="{{ url_for('user.my_profile') }}">My Profile</a>
+            {% if session['role'] in ['Admin', 'Manager'] %}
+            <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
+            {% endif %}
+            <a href="{{ url_for('dashboard.dashboard') }}">Exit</a>
         </div>
     </header>
-    
     <div class="back-icon-container">
-        <a href="{{ url_for('dashboard') }}" class="back-icon" title="Go Back">
+        <a href="{{ url_for('dashboard.dashboard') }}" class="back-icon" title="Go Back">
             <i class="fas fa-arrow-left"></i>
         </a>
     </div>
 
-    <!-- Cards Section -->
-    <div class="role">
-        <div class="cards">
-            
-            <div class="card" id="permission-card" onclick="navigateToPermission()">
-                <i class="fas fa-users card-icon"></i>
-                <h3>Emplyoees</h3>
-            </div>
-          
-            <div class="card" id="autogpt-permission-card" onclick="navigateToAutoGPTPermission()">
-                <i class="fas fa-robot card-icon"></i>
-                <h3>AutoGPT</h3>
-            </div>
+    <div class="cards">
+        <div class="card" onclick="navigateToPermission()">
+            <i class="fas fa-users card-icon"></i>
+            <h3>Employees</h3>
+        </div>
 
-            <div class="card" id="settings-card" onclick="navigateToSettings()">
-                <i class="fas fa-cog card-icon"></i> <!-- Settings Icon -->
-                <h3>Settings</h3>
-            </div>
-    
+        <div class="card" onclick="navigateToAutoGPTPermission()">
+            <i class="fas fa-robot card-icon"></i>
+            <h3>AutoGPT</h3>
+        </div>
+
+        <div class="card" onclick="navigateToSettings()">
+            <i class="fas fa-cog card-icon"></i>
+            <h3>Settings</h3>
         </div>
     </div>
 
     <script>
-        
         function navigateToPermission() {
-            window.location.href = '/view_usersPermission';
+            window.location.href = "{{ url_for('user.view_usersPermission') }}";
         }
 
         function navigateToAutoGPTPermission() {
-            window.location.href = '/view_autogptPermission';
+            window.location.href = "{{ url_for('prompt.view_autogptPermission') }}";
         }
-        
+
         function navigateToSettings() {
-            window.location.href = '/add_recoveryemail';
+            window.location.href = "{{ url_for('auth.add_recoveryemail') }}";
         }
-        
+
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Close dropdown menu when clicking outside
         document.addEventListener('click', function (event) {
             const dropdown = document.getElementById('dropdown-menu');
-            const menuContainer = document.querySelector('.menu-container');
-            if (!menuContainer.contains(event.target)) {
+            const menuIcon = document.querySelector('.menu-icon');
+            if (!menuIcon.contains(event.target) && !dropdown.contains(event.target)) {
                 dropdown.style.display = 'none';
             }
         });
     </script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>    
+
     <div class="footer">
         Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
     </div>
 </body>
+
 </html>

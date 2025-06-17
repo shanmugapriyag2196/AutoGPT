@@ -54,4 +54,6 @@ def dashboard():
         business_functions = []
         function_icons = {}
 
-    return render_template('dashboard.html', business_functions=business_functions, function_icons=function_icons)
+    return render_template('dashboard/dashboard.html', business_functions=business_functions, function_icons=function_icons)
+
+

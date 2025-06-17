@@ -22,4 +22,4 @@ def view_autogptPermission():
 
         prompts = cur.fetchall()
 
-    return render_template('view_autogptPermission.html', prompts=prompts, query=query)
+    return render_template('prompt/view_autogptPermission.html', prompts=prompts, query=query)

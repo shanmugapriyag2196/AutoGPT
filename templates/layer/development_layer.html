@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #eef2f7;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .menu-icon, .logout-icon {
+            font-size: 22px;
+            color: black;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: none;
+            width: 220px;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 6px 20px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .logo {
+            height: 35px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 220px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        
+        .card h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: end;
+            padding: 10px;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            color: #6c757d;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .back-icon-container {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+        }
+
+        .back-icon {
+            font-size: 14px;
+            color: black;
+            text-decoration: none;
+        }
+
+        .back-icon:hover {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div onclick="toggleDropdown()">
+            <i class="fas fa-bars menu-icon"></i>
+        </div>
+
+        <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
+
+        <a href="{{ url_for('auth.index') }}" title="Log Out">
+            <i class="fas fa-sign-out-alt logout-icon"></i>
+        </a>
+
+        <div id="dropdown-menu" class="dropdown-menu">
+            <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+            <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+            <a href="{{ url_for('user.my_profile') }}">My Profile</a>
+            {% if session['role'] in ['Admin', 'Manager'] %}
+            <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
+            {% endif %}
+            <a href="{{ url_for('dashboard.dashboard') }}">Exit</a>
+        </div>
+    </header>
+    <div class="back-icon-container">
+        <a href="{{ url_for('dashboard.dashboard') }}" class="back-icon" title="Go Back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+    </div>
+
+    <div class="cards">
+        <div class="card" onclick="navigateToDigitalTransformation()">
+            <i class="fas fa-network-wired card-icon"></i>
+            <h3>Digital Transformation</h3>
+        </div>
+
+        <!--<div class="card" onclick="navigateToReview()">
+            <i class="fas fa-clipboard-check card-icon"></i>
+            <h3>Reviews</h3>
+        </div>-->
+    </div>
+
+    <script>
+        function navigateToDigitalTransformation() {
+            window.location.href = "{{ url_for('dashboard.business_function_dashboard', business_function='Development') }}";
+        }
+
+        //function navigateToReview() {
+            //window.location.href = "{{ url_for('dashboard.business_function_dashboard', business_function='HR') }}";
+        //}
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('dropdown-menu');
+            const menuIcon = document.querySelector('.menu-icon');
+            if (!menuIcon.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+
+    <div class="footer">
+        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
+    </div>
+</body>
+
+</html>

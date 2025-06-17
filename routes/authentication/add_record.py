@@ -1,17 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint
+from flask import render_template, request, redirect, url_for, flash, Blueprint, current_app
 import sqlite3
 from itsdangerous import URLSafeTimedSerializer
-#from flask_mail import Mail, Message, mail
-from models import init_sqlite_db4
-from . import auth_bp
-
 from flask_mail import Message
-from flask import current_app
-from app import mail
+from . import auth_bp
+from extension import mail
 
-serializer = URLSafeTimedSerializer(auth_bp.secret_key)
-
-# Database connection function
 def get_db_connection():
     return sqlite3.connect('user4.db', check_same_thread=False)
 
@@ -33,15 +26,15 @@ def add_record():
                 )
                 conn.commit()
 
-                # Generate password reset link
+                # ✅ Create serializer inside the function
+                serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
                 token = serializer.dumps(email, salt="password-reset-salt")
-                reset_url = url_for('reset_password', token=token, _external=True)
+                reset_url = url_for('auth.reset_password', token=token, _external=True)
 
-                # Send Welcome Email with Password Setup Link
                 try:
                     msg = Message(
                         subject="Welcome to AutoGPT App - Set Your Password",
-                        sender=auth_bp.config['MAIL_USERNAME'],
+                        sender=current_app.config['MAIL_USERNAME'],
                         recipients=[email],
                         html=f"""
                         <html>
@@ -53,7 +46,7 @@ def add_record():
                                 <p>Welcome to the community!</p>
                             </body>
                         </html>
-                        """     
+                        """
                     )
                     mail.send(msg)
                     flash("Please go to your email and Set the password.", 'success')
@@ -65,6 +58,6 @@ def add_record():
         except Exception as db_error:
             flash(f"Error in registration: {str(db_error)}", 'danger')
 
-        return redirect(url_for("add_record"))
+        return redirect(url_for("auth.add_record"))
 
-    return render_template('add_record.html')
+    return render_template('authentication/add_record.html')

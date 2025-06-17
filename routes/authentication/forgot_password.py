@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, Blueprint, current_app
 import sqlite3
-from flask_mail import Mail, Message, mail
+#from flask_mail import Mail, Message, mail
 import time
 import datetime
 from datetime import date
 import random
 from . import auth_bp
+from flask_mail import Message
+from extension import mail
 
 @auth_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -16,7 +18,7 @@ def forgot_password():
         # Validate inputs
         if not email or not new_password:
             flash("Username and new password cannot be empty.", "danger")
-            return redirect(url_for('forgot_password'))
+            return redirect(url_for('auth.forgot_password'))
         # Step 1: Generate and store OTP in session
         otp = str(random.randint(100000, 999999))  # Generate a 6-digit OTP
         otp_expiry_time = time.time() + 300  # OTP expires in 5 minutes
@@ -27,7 +29,7 @@ def forgot_password():
         try:
             msg = Message(
                 subject="Your OTP for Password Reset",
-                sender=auth_bp.config['MAIL_USERNAME'],
+                sender=current_app.config['MAIL_USERNAME'],
                 recipients=[email],
                 html=f"""
                 <html>
@@ -43,5 +45,5 @@ def forgot_password():
             flash('An OTP has been sent to your email address.', 'info')
         except Exception as email_error:
             flash(f'Failed to send email: {str(email_error)}', 'danger')
-        return render_template('verify_otp.html')  # Render OTP input page
-    return render_template('forgot_password.html')
+        return render_template('authentication/verify_otp.html')  # Render OTP input page
+    return render_template('authentication/forgot_password.html')

@@ -10,5 +10,5 @@ def activate_prompt(prompt_id):
         cur.execute("UPDATE autogpt1 SET status = 'Active' WHERE id = ?", (prompt_id,))
         conn.commit()
     flash("Prompt activated successfully!", "success")
-    return redirect(url_for('view_autogptPermission'))
+    return redirect(url_for('prompt.view_autogptPermission'))
 

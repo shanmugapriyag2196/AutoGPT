@@ -14,24 +14,34 @@
             font-family: Arial, sans-serif;
         }
 
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: #eef2f7;
             font-size: 16px;
             color: #343a40;
+            overflow: hidden; 
+            
         }
 
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            background-color: #ffffff;
-            padding: 15px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            background-color: #fff;
+            height: 12vh;
+            padding: 10px 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
         }
-
         .menu-container {
             cursor: pointer;
             position: absolute;
@@ -43,7 +53,6 @@
             font-size: 20px;
             color: black;
         }
-
         .logo-container {
             display: flex;
             justify-content: center;
@@ -54,7 +63,6 @@
         .logo {
             height: 35px;
         }
-
         .logout-container {
             position: absolute;
             right: 20px;
@@ -69,24 +77,22 @@
         .logout-icon:hover {
             color: black; /* Darker red on hover */
         }
-
-        /* Dropdown Menu */
         .dropdown-menu {
             position: absolute;
             top: 50px;
             left: 5px;
-            width: 250px;
+            width: 220px;
             z-index: 1000;
             display: none;
             background-color: #ffffff;
             border: 1px solid #ced4da;
-            border-radius: 5px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .dropdown-menu a {
             display: block;
-            padding: 10px 20px;
+            padding: 4px 20px;
             text-decoration: none;
             color: #343a40;
             font-size: 1rem;
@@ -97,7 +103,7 @@
         }
 
         .form-container {
-            max-width: 550px;
+            max-width: 300px;
             margin: 40px auto;
         }
 
@@ -105,6 +111,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 15px;
+            max-width: 500px;
         }
 
         label {
@@ -130,12 +137,13 @@
             position: relative;
             display: flex;
             align-items: center;
-            width: 76%;
+            width: 70%;
         }
 
         .password-container input {
             width: 70%;
             padding-right: 40px;
+            background: #e9ecef;
         }
 
         .password-container button {
@@ -170,36 +178,20 @@
 
         .header-title {
             font-size: 19px;
-            font-weight: bold;
+            font-weight: 500;
             margin-bottom: 20px;
             color: #007bff;
         }
 
-        /* Center the "Password Manager" title and make it green */
         .password-title {
             font-size: 19px;
-            font-weight: bold;
+            font-weight: 500;
             color: #007bff; 
             text-align: start;
             margin-top: 30px;
             margin-bottom: 20px;
         }
 
-        .footer {
-            text-align: end;
-            margin-top: 70px;
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        .footer a {
-            text-decoration: none;
-            color: #007bff;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
         .back-icon-container {
             position: absolute;
             top: 90px;
@@ -224,13 +216,13 @@
         <div class="menu-container" onclick="toggleDropdown()">
             <i class="fas fa-bars menu-icon"></i>
             <div id="dropdown-menu" class="dropdown-menu">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
-                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+                <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('user.my_profile') }}">My Profile</a>
                 {% if session['role'] in ['Admin', 'Manager'] %}
-                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
                 {% endif %}
-                <a href="{{ url_for('dashboard') }}">Exit</a>
+                <a href="{{ url_for('dashboard.dashboard') }}">Exit</a>
                 
             </div>
         </div>
@@ -242,20 +234,20 @@
 
         <!-- Logout Icon -->
         <div class="logout-container">
-            <a href="{{ url_for('index') }}" title="Log Out">
+            <a href="{{ url_for('auth.index') }}" title="Log Out">
                 <i class="fas fa-sign-out-alt logout-icon"></i>
             </a>
         </div>
     </header>
 
     <div class="back-icon-container">
-        <a href="{{ url_for('roles_permission') }}" class="back-icon" title="Go Back">
+        <a href="{{ url_for('auth.roles_permission') }}" class="back-icon" title="Go Back">
             <i class="fas fa-arrow-left"></i>
         </a>
     </div>
 
-    <div class="form-container">
-        <form method="POST" action="{{ url_for('add_recoveryemail') }}" autocomplete="off">
+    <div class="container">
+        <form method="POST" action="{{ url_for('auth.add_recoveryemail') }}" autocomplete="off">
             <div class="header-title">My Settings</div>
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -281,7 +273,6 @@
 
             <input type="submit" class="btn-primary" value="Add Recovery Email">
 
-            <!-- Centered "Password Manager" title with green color -->
             <div class="password-title">Password Manager</div>
 
             <div class="form-group">
@@ -293,7 +284,9 @@
                 <label for="passwordField">Password</label>
                 <div class="password-container">
                     <input type="password" name="password" value="{{ user.password }}" id="passwordField" readonly>
-                    <button type="button" id="togglePassword">&#128065;</button>
+                    <button type="button" id="togglePassword">
+                        <i class="fas fa-eye"></i> 
+                    </button>
                 </div>
             </div>
         </form>
@@ -301,14 +294,18 @@
 
     <script>
         document.getElementById("togglePassword").addEventListener("click", function () {
-            var passwordField = document.getElementById("passwordField");
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                this.innerHTML = "&#128064;";
-            } else {
-                passwordField.type = "password";
-                this.innerHTML = "&#128065;";
-            }
+        var passwordField = document.getElementById("passwordField");
+        var icon = this.querySelector("i");
+
+        if (passwordField.type === "password") {
+           passwordField.type = "text";
+           icon.classList.remove("fa-eye");
+           icon.classList.add("fa-eye-slash"); // Change to "eye-slash" when visible
+        } else {
+           passwordField.type = "password";
+           icon.classList.remove("fa-eye-slash");
+           icon.classList.add("fa-eye"); // Change back to "eye" when hidden
+        }
         });
 
         function toggleDropdown() {
@@ -341,9 +338,9 @@
         });
     });
     </script>
-    <div class="footer">
-        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
-    </div>
+    <footer style="text-align: end; padding: 15px 10px; font-size: 14px; color: #6c757d; position: fixed; width: 100%; bottom: 0;">
+        Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer" style="color: #007bff; text-decoration: none;">Value Global LLC</a>
+    </footer>
 
 </body>
 </html>

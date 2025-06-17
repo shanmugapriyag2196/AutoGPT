@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Prompt</title>
+    <title>Edit AutoGPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-
-body {
-            background-color: #f8f9fa;
+        body {
+            background-color: #eef2f7;
             font-family: Arial, sans-serif;
             padding: 0;
-            box-sizing: border-box;
-            
+            box-sizing: border-box;    
         }
          
         .container {
             max-width: 600px;
-            margin: left;
+            margin: 40px auto;
             background: #ffffff;
-            padding: 30px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .header {
             display: flex;
@@ -74,18 +74,18 @@ body {
             position: absolute;
             top: 50px;
             left: 5px;
-            width: 250px;
+            width: 220px;
             z-index: 1000;
             display: none;
             background-color: #ffffff;
             border: 1px solid #ced4da;
-            border-radius: 5px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .dropdown-menu a {
             display: block;
-            padding: 10px 20px;
+            padding: 4px 20px;
             text-decoration: none;
             color: #343a40;
             font-size: 1rem;
@@ -106,7 +106,7 @@ body {
             color: #333;
         }
         .form-control {
-            height: 50px;
+            height: 40px;
             border-radius: 5px;
             background-color: #f8f9fa;
             border: 1px solid #ced4da;
@@ -125,7 +125,7 @@ body {
             width: 30%;
             height: 40px;
             font-weight: bold;
-            border-radius: 25px;    
+            border-radius: 10px;    
         }
         .btn-success:hover {
             background-color: #0056b3;
@@ -136,7 +136,11 @@ body {
             width: 30%;
             height: 40px;
             font-weight: bold;
-            border-radius: 25px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
         .btn-secondary:hover {
             background-color: #5a6268;
@@ -170,8 +174,8 @@ body {
         .footer {
             position: fixed;
             bottom: 10px;
-            right: 10px;
-            text-align: right;
+            right: 30px;
+            text-align: end;
             font-size: 14px;
             color: #6c757d;
         }
@@ -197,6 +201,13 @@ body {
         .back-icon:hover {
             color: black;
         }
+
+        textarea.form-control {
+            height: auto;
+            padding: 10px;
+            padding-right: 60px; 
+        }
+
     </style>
 </head>
 <body>
@@ -204,31 +215,27 @@ body {
         <div class="menu-container" onclick="toggleDropdown()">
             <i class="fas fa-bars menu-icon"></i>
             <div id="dropdown-menu" class="dropdown-menu">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
-                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+                <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('user.my_profile') }}">My Profile</a>
                 {% if session['role'] in ['Admin', 'Manager'] %}
-                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
                 {% endif %}
-                <a href="{{ url_for('roles_permission') }}">Exit</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Exit</a>
                 
             </div>
         </div>
         <div class="logo-container">
             <img src="{{ url_for('static', filename='LogoWhite.png') }}" alt="Logo" class="logo">
         </div>
-    <!-- Logout Icon -->
+   
         <div class="logout-container">
-           <a href="{{ url_for('index') }}" title="Log Out">
+           <a href="{{ url_for('auth.index') }}" title="Log Out">
                <i class="fas fa-sign-out-alt logout-icon"></i>
            </a>
         </div>
     </header>  
-    <!--<div class="back-icon-container">
-        <a href="javascript:history.back();" class="back-icon" title="Go Back">
-            <i class="fas fa-arrow-left"></i>
-        </a>
-    </div>-->
+
     <div class="back-icon-container">
         <a href="#" onclick="goBack()" class="back-icon" title="Go Back">
             <i class="fas fa-arrow-left"></i>
@@ -268,7 +275,7 @@ body {
                     class="form-control" 
                     id="description" 
                     name="description" 
-                    rows="4">{{ prompt['description'] }}</textarea>
+                    rows="2">{{ prompt['description'] }}</textarea>
             </div>
 
             <!-- Business Function Dropdown -->
@@ -286,43 +293,137 @@ body {
                 </div>
             </div>
 
-            <!-- Prompt -->
-            <div class="form-group">
+            <!--<div class="form-group">
                 <label for="prompt">Prompt</label>
                 <textarea 
                     class="form-control" 
                     id="prompt" 
                     name="prompt" 
-                    rows="4">{{ prompt['prompt'] }}</textarea>
-            </div>
-            
-            <!-- Output Template -->
-            <div class="form-group">
-                <label for="template_file">Output Template</label>
-                <textarea 
-                    class="form-control" 
-                    id="template_file" 
-                    name="template_file" 
-                    rows="4">{{ prompt['template_file'] }}</textarea>
+                    rows="2">{{ prompt['prompt'] }}</textarea>
+            </div>-->
+
+            <!-- Prompt with Upload & Download Icons -->
+            <div class="form-group position-relative">
+                <label for="prompt">Prompt</label>  
+                <textarea class="form-control pe-5" id="prompt" name="prompt" rows="2" placeholder="Enter the GPT prompt"
+                    style="padding-right: 80px;">{{ prompt['prompt'] }}</textarea>
+
+                <label for="promptUpload" title="Upload Prompt" style="position: absolute;top: 45px;right: 45px;cursor: pointer;z-index: 10;">
+                    <i class="fas fa-upload text-primary"></i>
+                </label>
+                <input type="file" id="promptUpload" style="display: none;" accept=".txt,.docx,.pdf">
+
+                <span title="Download Prompt" onclick="downloadPromptText()" style="position: absolute;top: 45px;right: 25px;cursor: pointer;z-index: 10;">
+                     <i class="fas fa-download text-success"></i>
+                </span>
             </div>
 
+            <!--<div class="form-group">
+                <label for="template_file">Output Template</label>
+                <textarea class="form-control" id="template_file" name="template_file" 
+                    rows="1">{{ prompt['template_file'] }}</textarea>     
+            </div>-->
+
+            <!-- Output Template with Upload Icon Inside -->
+            <div class="form-group position-relative">
+                <label for="template_file">Output Template</label>
+                <textarea class="form-control pe-5" id="template_file" name="template_file" rows="1" 
+                    style="padding-right: 60px;">{{ prompt['template_file'] }}</textarea>
+            
+            <label for="templateUpload" title="Upload Template" 
+                style="position: absolute; top: 38px; right: 45px; cursor: pointer; z-index: 10;">
+                    <i class="fas fa-upload text-primary"></i>
+            </label>
+            <div id="templateFileName" class="mt-2 text-success fw-bold" style="display: none;"></div>
+                <input type="file" id="templateUpload" style="display: none;" accept=".txt,.docx,.pdf">    
+            <span title="Download Prompt1" onclick="downloadPromptText1()" style="position: absolute; top: 38px; right: 25px; cursor: pointer; z-index: 10;">
+                    <i class="fas fa-download text-success"></i>
+                </span>
+            </div>
+       
             <!-- Input Expected -->
-            <div class="form-group">
+            <div class="form-group position-relative">
                 <label for="input_expected">Input Expected</label>
-                <textarea 
+                <!--<textarea 
                     class="form-control" 
                     id="input_expected" 
                     name="input_expected" 
-                    rows="5">{{ prompt['input_expected'] }}</textarea>
+                    rows="2">{{ prompt['input_expected'] }}</textarea>-->
+                <textarea class="form-control pe-5" id="input_expected" name="input_expected" rows="1" 
+                    style="padding-right: 60px;">{{ prompt['input_expected'] }}</textarea>
+            
+                <label for="inputUpload" title="Upload Template" 
+                    style="position: absolute; top: 38px; right: 45px; cursor: pointer; z-index: 10;">
+                    <i class="fas fa-upload text-primary"></i>
+                </label>
+                <div id="templateFileName" class="mt-2 text-success fw-bold" style="display: none;"></div>
+                    <input type="file" id="inputUpload" style="display: none;" accept=".txt,.docx,.pdf">    
+                <span title="Download Prompt2" onclick="downloadPromptText2()" style="position: absolute; top: 38px; right: 25px; cursor: pointer; z-index: 10;">
+                    <i class="fas fa-download text-success"></i>
+                </span>
             </div>
         
+            <div class="form-group">
+                <label for="version">Version</label>
+                <textarea 
+                    class="form-control" 
+                    id="version" 
+                    name="version" 
+                    rows="2">{{ prompt['version'] }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="help_text">Help Text</label>
+                <textarea 
+                    class="form-control" 
+                    id="help_text" 
+                    name="help_text" 
+                    rows="2">{{ prompt['help_text'] }}</textarea>
+            </div>
+
             <!-- Buttons -->
             <div class="action-buttons">
                 <button type="submit" class="btn btn-success">Update</button>
-                <a href="{{ url_for('view_autogptPermission') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ url_for('prompt.view_autogptPermission') }}" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
+    <script>
+        document.getElementById('templateUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('template_file').value = e.target.result;
+
+
+            const fileNameDiv = document.getElementById('templateFileName');
+                fileNameDiv.textContent = `Uploaded: ${file.name}`;
+                fileNameDiv.style.display = 'block';
+    
+        };
+        reader.readAsText(file);
+        });
+
+
+        function downloadPromptText1() {
+        const promptContent = document.getElementById('template_file').value;
+        if (!promptContent.trim()) return;
+
+        const blob = new Blob([promptContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template file.txt";
+        a.click();
+
+        URL.revokeObjectURL(url);
+        }
+
+    </script>
+
     <script>
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
@@ -342,9 +443,9 @@ body {
         if (document.referrer) {
             history.back(); // Go to previous page if history exists
         } else {
-            window.location.href = "{{ url_for('dashboard') }}"; // Redirect to Dashboard if no history
+            window.location.href = "{{ url_for('dashboard.dashboard') }}"; // Redirect to Dashboard if no history
         }
-    }
+        }
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -358,8 +459,69 @@ body {
            setTimeout(() => alert.remove(), 150); // Remove element after fade-out
            }, 3000); // 3000ms = 3 seconds
         });
-    });
+        });
     </script>
+    <script>
+    // Upload functionality
+    document.getElementById('promptUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('prompt').value = e.target.result;
+        };
+        reader.readAsText(file);
+        });
+
+    
+    // Download functionality
+    function downloadPromptText() {
+        const promptContent = document.getElementById('prompt').value;
+        if (!promptContent.trim()) return;
+
+        const blob = new Blob([promptContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "prompt.txt";
+        a.click();
+
+        URL.revokeObjectURL(url);
+        }
+    </script>
+    <script>
+    // Upload functionality
+    document.getElementById('inputUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('input_expected').value = e.target.result;
+        };
+        reader.readAsText(file);
+        });
+
+    
+    // Download functionality
+    function downloadPromptText2() {
+        const promptContent = document.getElementById('input_expected').value;
+        if (!promptContent.trim()) return;
+
+        const blob = new Blob([promptContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Input Expected.txt";
+        a.click();
+
+        URL.revokeObjectURL(url);
+        }
+    </script>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <div class="footer">

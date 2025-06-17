@@ -14,7 +14,7 @@
         }
 
         body {
-            background-color: #f8f9fa;
+            background-color: #eef2f7;
             font-size: 16px;
             color: #343a40;
         }
@@ -75,12 +75,12 @@
             position: absolute;
             top: 50px;
             left: 5px;
-            width: 250px;
+            width: 220px;
             z-index: 1000;
             display: none;
             background-color: #ffffff;
             border: 1px solid #ced4da;
-            border-radius: 5px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -107,6 +107,7 @@
             gap: 50px;
             margin-top: 20px;
             padding-left: 20px;
+            border-radius: 20px;
         }
         /* If Admin or Manager, space out the items evenly */
         .admin-manager {
@@ -145,7 +146,7 @@
 
         .footer {
             text-align: end;
-            margin-top: 330px;
+            margin-top: 380px;
             color: #6c757d;
             font-size: 14px;
         }
@@ -167,13 +168,13 @@
         <div class="menu-container" onclick="toggleDropdown()">
             <i class="fas fa-bars menu-icon"></i>
             <div id="dropdown-menu" class="dropdown-menu">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
-                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+                <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('user.my_profile') }}">My Profile</a>
                 {% if session['role'] in ['Admin', 'Manager'] %}
-                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
                 {% endif %}
-                <a href="{{ url_for('dashboard') }}">Exit</a> 
+                <a href="{{ url_for('dashboard.dashboard') }}">Exit</a> 
             </div>
         </div>
 
@@ -184,7 +185,7 @@
 
         <!-- Logout Icon -->
         <div class="logout-container">
-            <a href="{{ url_for('index') }}" title="Log Out">
+            <a href="{{ url_for('auth.index') }}" title="Log Out">
                 <i class="fas fa-sign-out-alt logout-icon"></i>
             </a>
         </div>
@@ -240,16 +241,54 @@
             {% endif %}   
         </div>
     </div>-->
-    <div class="dashboard">
+    <!--<div class="dashboard">
         <div class="icons-container">
             {% for function in business_functions %}
-            <div class="icon-item" onclick="location.href='{{ url_for('business_function_dashboard', business_function=function) }}'">
+            <div class="icon-item" onclick="location.href='{{ url_for('dashboard.business_function_dashboard', business_function=function) }}'">
                 <i class="{{ function_icons.get(function, 'fas fa-briefcase') }}"></i>
                 <span>{{ function }}</span>
             </div>
             {% endfor %}
         </div>
+    </div>-->
+    <!--<div class="icons-container">
+        {% for function in business_functions %}
+        {% set target_url = url_for('layer.hr_layer') if function == 'HR' else url_for('dashboard.business_function_dashboard', business_function=function) %}
+        {% set target_url = url_for('layer.marketing_layer') if function == 'Marketing' else url_for('dashboard.business_function_dashboard', business_function=function) %}    
+        {% set target_url = url_for('layer.development_layer') if function == 'Development' else url_for('dashboard.business_function_dashboard', business_function=function) %}
+        <div class="icon-item" onclick="location.href='{{ target_url }}'">
+                <i class="{{ function_icons.get(function, 'fas fa-briefcase') }}"></i>
+            <span>{{ function }}</span>
+            </div>
+        {% endfor %}
+    </div>-->
+
+    <div class="icons-container">
+    {% for function in business_functions %}
+        {% if function == 'HR' %}
+           {% set target_url = url_for('layer.hr_layer') %}
+        {% elif function == 'Marketing' %}
+           {% set target_url = url_for('layer.marketing_layer') %}
+        {% elif function == 'Development' %}
+           {% set target_url = url_for('layer.development_layer') %}
+        {% elif function == 'Operations'%}
+           {% set target_url = url_for('layer.operation_layer') %}
+        {% elif function == 'Resourcing'%}
+           {% set target_url = url_for('layer.resourcing_layer') %}
+        {% elif function == 'Sales'%}
+           {% set target_url = url_for('layer.sales_layer') %}
+        {% else %}
+           {% set target_url = url_for('dashboard.business_function_dashboard', business_function=function) %}
+        {% endif %}
+
+    <div class="icon-item" onclick="location.href='{{ target_url }}'">
+      <i class="{{ function_icons.get(function, 'fas fa-briefcase') }}"></i>
+      <span>{{ function }}</span>
     </div>
+    {% endfor %}
+    </div>
+
+
     <footer class="footer">
         Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noopener noreferrer">Value Global LLC</a>.
     </footer>

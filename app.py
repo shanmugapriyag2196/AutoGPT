@@ -1,17 +1,14 @@
 from flask import Flask
 from config import Config
-from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail
-from flask_migrate import Migrate
-from models import init_sqlite_db1, init_sqlite_db4, init_sqlite_db6
+from extension import db, mail, migrate
+from models import init_sqlite_db1, init_sqlite_db4, init_sqlite_db6, MeetingResponse
 from dotenv import load_dotenv
 from routes import register_blueprints
+import os
 
-db = SQLAlchemy()
-mail = Mail()
-migrate = Migrate()
+load_dotenv()  # Load environment variables from .env
 
-load_dotenv()  # Load environment from .env
+#openai_api_key=os.getenv("OPENAI_API_KEY")  # Use this if needed
 
 def create_app():
     app = Flask(__name__)
@@ -22,14 +19,12 @@ def create_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
-    # Initialize SQLite
     with app.app_context():
         init_sqlite_db1()
         init_sqlite_db4()
         init_sqlite_db6()
         db.create_all()
 
-    # Register Blueprints
     register_blueprints(app)
 
     return app

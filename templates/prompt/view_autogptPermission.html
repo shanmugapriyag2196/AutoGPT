@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: #eef2f7;
             margin: 0;
             padding: 0;
         }
@@ -19,7 +19,6 @@
             margin-top: 20px;
         }
 
-        /* Header */
         .header {
             display: flex;
             justify-content: center;
@@ -75,18 +74,18 @@
             position: absolute;
             top: 50px;
             left: 5px;
-            width: 250px;
+            width: 220px;
             z-index: 1000;
             display: none;
             background-color: #ffffff;
             border: 1px solid #ced4da;
-            border-radius: 5px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .dropdown-menu a {
             display: block;
-            padding: 10px 20px;
+            padding: 4px 20px;
             text-decoration: none;
             color: #343a40;
             font-size: 1rem;
@@ -104,7 +103,7 @@
         }
 
         .search-input {
-            width: 60%;
+            width: 80%;
             max-width: 300px;
         }
    
@@ -134,18 +133,18 @@
             align-items: center;
             background-color: white;
             padding: 20px;
-            border-radius: 5px;
+            border-radius: 12px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
             height: 95%;
-            width: 75%;
+            width: 60%;
             position: relative;
         }
 
         .user-initial {
-            width: 50px;
-            height: 50px;
-            border-radius: 5%;
+            width: 35px;
+            height: 30px;
+            border-radius: 12%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -166,7 +165,7 @@
             flex-grow: 1;
         }
 
-        .user-role {
+        .timestamp {
             color: gray;
             font-size: 14px;
         }
@@ -207,8 +206,6 @@
        color: #0056b3;
        }
 
-
-        /* Footer */
         .footer {
             position: fixed;
             bottom: 10px;
@@ -244,6 +241,7 @@
             filter: blur(2px); 
             opacity: 0.6; 
         }
+
     </style>
 </head>
 <body>
@@ -252,13 +250,13 @@
         <div class="menu-container" onclick="toggleDropdown()">
             <i class="fas fa-bars menu-icon"></i>
             <div id="dropdown-menu" class="dropdown-menu">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
-                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+                <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('user.my_profile') }}">My Profile</a>
                 {% if session['role'] in ['Admin', 'Manager'] %}
-                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
                 {% endif %}
-                <a href="{{ url_for('roles_permission') }}">Exit</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Exit</a>
                 
             </div>
         </div>
@@ -270,29 +268,26 @@
 
         <!-- Logout Icon -->
         <div class="logout-container">
-            <a href="{{ url_for('index') }}" title="Log Out">
+            <a href="{{ url_for('auth.index') }}" title="Log Out">
                 <i class="fas fa-sign-out-alt logout-icon"></i>
             </a>
         </div>
     </header>
-    <!--<div class="back-icon-container">
-        <a href="{{ url_for('roles_permission') }}" class="back-icon" title="Go Back">←</a>
-    </div>  -->
     <div class="back-icon-container">
-        <a href="{{ url_for('roles_permission') }}" class="back-icon" title="Go Back">
+        <a href="{{ url_for('auth.roles_permission') }}" class="back-icon" title="Go Back">
             <i class="fas fa-arrow-left"></i>
         </a>
     </div>
     
     <div class="container d-flex justify-content-center mb-3">
-        <a href="{{ url_for('create_autogpt') }}" class="btn btn-success mr-3">
-            <i class="fas fa-plus"></i> Add New
+        <a href="{{ url_for('prompt.create_autogpt') }}" class="btn btn-success mr-3">
+            <i class="fas fa-user-plus"></i> Add Prompt
         </a>
         <form action="/view_autogptPermission" method="get" class="d-flex position-relative">
             <input type="text" name="query" class="form-control search-input" placeholder="Search" value="{{ query }}">
-            <button type="submit" class="btn btn-primary ml-2">
+            <!--<button type="submit" class="btn btn-primary ml-2">
                 <i class="fas fa-search"></i> Search
-            </button>
+            </button>-->
             <i class="fas fa-times cancel-icon" id="cancel-search"></i>
         </form>
     </div>
@@ -334,7 +329,7 @@
 
                     <!-- Actions -->
                     <div class="actions">
-                        <a href="{{ url_for('edit_autogpt', prompt_id=prompt['id']) }}"><i class="fas fa-edit action-icon"></i></a>
+                        <a href="{{ url_for('prompt.edit_autogpt', prompt_id=prompt['id']) }}"><i class="fas fa-edit action-icon"></i></a>
                         <div class="dropdown">
                             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton{{ prompt['id'] }}"
                                 data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: none;">
@@ -342,14 +337,14 @@
                         
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton{{ prompt['id'] }}">
                                 <li>
-                                    <form action="{{ url_for('activate_prompt', prompt_id=prompt['id']) }}" method="POST">
+                                    <form action="{{ url_for('prompt.activate_prompt', prompt_id=prompt['id']) }}" method="POST">
                                         <button type="submit" class="dropdown-item text-success">
                                             <i class="fas fa-check-circle"></i> Activate
                                         </button>
                                     </form>
                                 </li>
                                 <li>
-                                    <form action="{{ url_for('deactivate_prompt', prompt_id=prompt['id']) }}" method="POST">
+                                    <form action="{{ url_for('prompt.deactivate_prompt', prompt_id=prompt['id']) }}" method="POST">
                                         <button type="submit" class="dropdown-item text-danger">
                                             <i class="fas fa-times-circle"></i> Deactivate
                                         </button>

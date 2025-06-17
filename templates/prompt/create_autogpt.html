@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #eef2f7;
             font-family: Arial, sans-serif;
             padding: 0;
             box-sizing: border-box;
@@ -17,9 +17,11 @@
          
         .container {
             max-width: 600px;
-            margin: left;
+            margin: 40px auto;
             background: #ffffff;
-            padding: 30px;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .header {
             display: flex;
@@ -75,18 +77,18 @@
             position: absolute;
             top: 50px;
             left: 5px;
-            width: 250px;
+            width: 220px;
             z-index: 1000;
             display: none;
             background-color: #ffffff;
             border: 1px solid #ced4da;
-            border-radius: 5px;
+            border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .dropdown-menu a {
             display: block;
-            padding: 10px 20px;
+            padding: 4px 20px;
             text-decoration: none;
             color: #343a40;
             font-size: 1rem;
@@ -97,21 +99,6 @@
         }
         .form-label {
             font-weight: bold;
-        }
-
-        .drag-drop-area {
-            border: 1px dashed #ced4da;
-            border-radius: 1px;
-            padding: 10px;
-            text-align: center;
-            color: #6c757d;
-            cursor: pointer;
-            margin-top: 5px;
-        }
-
-        .drag-drop-area:hover {
-            background-color: #f8f9fa;
-            color: #343a40;
         }
 
         .btn-group {
@@ -146,6 +133,15 @@
         .back-icon:hover {
             color: black;
         }
+
+        h5 {
+            text-align: center;
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 20px;
+        } 
+        
     </style>
 </head>
 <body>
@@ -153,13 +149,13 @@
         <div class="menu-container" onclick="toggleDropdown()">
             <i class="fas fa-bars menu-icon"></i>
             <div id="dropdown-menu" class="dropdown-menu">
-                <a href="{{ url_for('dashboard') }}">Home</a>
-                <a href="{{ url_for('create_autogpt') }}">Create AutoGPT</a>
-                <a href="{{ url_for('my_profile') }}">My Profile</a>
+                <a href="{{ url_for('dashboard.dashboard') }}">Home</a>
+                <a href="{{ url_for('prompt.create_autogpt') }}">Create AutoGPT</a>
+                <a href="{{ url_for('user.my_profile') }}">My Profile</a>
                 {% if session['role'] in ['Admin', 'Manager'] %}
-                <a href="{{ url_for('roles_permission') }}">Roles & Permission</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Roles & Permission</a>
                 {% endif %}
-                <a href="{{ url_for('roles_permission') }}">Exit</a>
+                <a href="{{ url_for('auth.roles_permission') }}">Exit</a>
                 
             </div>
         </div>
@@ -168,18 +164,18 @@
         </div>
     <!-- Logout Icon -->
         <div class="logout-container">
-           <a href="{{ url_for('index') }}" title="Log Out">
+           <a href="{{ url_for('auth.index') }}" title="Log Out">
                <i class="fas fa-sign-out-alt logout-icon"></i>
            </a>
         </div>
     </header>  
     <div class="back-icon-container">
-        <a href="{{ url_for('dashboard') }}" class="back-icon" title="Go Back">
+        <a href="{{ url_for('dashboard.dashboard') }}" class="back-icon" title="Go Back">
             <i class="fas fa-arrow-left"></i>
         </a>
     </div>    
     <div class="container">
-        <h5 class="text-center mb-4" style="color: rgb(8, 8, 246);">Create AutoGPT</h5>
+        <h5 class="text-center mb-4" style="color: #007bff;">Create AutoGPT</h5>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div>
@@ -192,27 +188,8 @@
                 </div>
             {% endif %}
         {% endwith %}
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('create_autogpt') }}">
-            <!-- Business Functions Dropdown -->
-            <!--<div class="mb-3">
-                <label for="business_function" class="form-label">Business Function</label>
-                <select id="business_function" name="business_function" class="form-select" required>
-                    <option value="" disabled selected>Select a business function</option>
-                    <option value="Sales">Sales</option>
-                    <option value="HR">HR</option>
-                    <option value="Development">Development</option>
-                    <option value="Marketing">Marketing</option>
-                </select>
-            </div>-->
-            <!--<div class="mb-3">
-                <label for="business_function" class="form-label">Business Function</label>
-                <select id="business_function" name="business_function" class="form-select" required>
-                    <option value="" disabled selected>Select a business function</option>
-                    {% for function in business_functions %}
-                        <option value="{{ function }}" {% if function == selected_function %} selected {% endif %}>{{ function }}</option>
-                    {% endfor %}
-                </select>
-            </div>-->
+
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('prompt.create_autogpt') }}">
         
             <div class="mb-3">
                 <label for="business_function" class="form-label">Business Function</label>
@@ -233,66 +210,77 @@
             <!-- GPT Description Input -->
             <div class="mb-3">
                 <label for="description" class="form-label">Description of the GPT</label>
-                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                <textarea id="description" name="description" class="form-control" rows="2" placeholder="Enter Description"></textarea>
             </div>
 
-            <!-- Prompt Text Area -->
-            <div class="mb-3">
+            <div class="mb-3 position-relative">
                 <label for="prompt" class="form-label">Prompt</label>
-                <textarea id="prompt" name="prompt" class="form-control" rows="5" placeholder="Enter the GPT prompt"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="input_expected" class="form-label">Input Expected</label>
-                <textarea id="input_expected" name="input_expected" class="form-control" rows="5" placeholder="Enter the Expected Input"></textarea>
+                <textarea id="prompt" name="prompt" class="form-control pe-5" rows="2" placeholder="Enter the GPT prompt"></textarea>
+                <label for="promptUpload" style="position: absolute; top: 45px; right: 35px; z-index: 10; cursor: pointer;">
+                    <i class="fas fa-upload text-primary"></i>
+                </label>
+                <input type="file" id="promptUpload" style="display: none;" accept=".txt, .docx, .pdf">
+                <span title="Download Prompt" onclick="downloadPromptText()" style="position: absolute; top: 45px; right: 15px; cursor: pointer; z-index: 10;">
+                    <i class="fas fa-download text-success"></i>
+                </span>
             </div>
 
-            <!-- Output Template Upload -->
+            <!--<div class="mb-3">
+                <label for="input_expected" class="form-label">Input Expected</label>
+                <textarea id="input_expected" name="input_expected" class="form-control" rows="2" placeholder="Enter the Expected Input"></textarea>
+            </div>-->
+
+            <div class="mb-3 position-relative">
+                <label for="input_expected" class="form-label">Input Expected</label>
+                <textarea id="input_expected" name="input_expected" class="form-control pe-5" rows="2" placeholder="Enter the Expected Input"
+                    style="padding-right: 80px;"></textarea>
+    
+                <label for="inputUpload" title="Upload Input Expected"
+                    style="position: absolute; top: 45px; right: 35px; z-index: 10; cursor: pointer;">
+                    <i class="fas fa-upload text-primary"></i>
+                </label>
+                <input type="file" id="inputUpload" style="display: none;" accept=".txt,.docx,.pdf">
+
+                <span title="Download Input Expected" onclick="inputPromptText()"
+                    style="position: absolute; top: 45px; right: 15px; cursor: pointer; z-index: 10;">
+                    <i class="fas fa-download text-success"></i>
+                </span>
+            </div>
+
+
             <div class="mb-3">
-                <label class="form-label">Output Template</label>
-                <div class="drag-drop-area" id="drag-drop-area">
-                    Drag & Drop a File Here 
-                    <input type="file" name="template_file" id="template_file" style="display: none;" accept=".txt,.docx,.pdf">
-                </div>
-                <p class="text-muted mt-2">Supported formats: .txt, .docx, .pdf</p>
+               <label for="template_file" class="form-label">Output Template</label>
+            <div class="border border-2 border-dashed rounded px-4 py-4 text-center bg-light position-relative" 
+               id="drag-drop-area" style="cursor: pointer;">
+                   <i class="fas fa-file-upload fa-2x text-primary mb-2"></i>
+               <p class="mb-1">Click or Drag & Drop your template file here</p>
+               <small class="text-muted">Supported: .txt, .docx, .pdf</small>
+            <input type="file" name="template_file" id="template_file" 
+               style="position: absolute; top: 0; left: 0; width: 100%; height: 50%; opacity: 0;" 
+               accept=".txt,.docx,.pdf">
+            </div>
+            <div id="templateFileName" class="mt-2 text-success fw-bold" style="display: none;"></div>
+            </div>
+            <div class="mb-3">
+                <label for="version" class="form-label">Version</label>
+                <input type="text" id="version" name="version" class="form-control" placeholder="Enter the Version" required>
+            </div>
+            <div class="mb-3">
+                <label for="help_text" class="form-label">Help Text</label>
+                <input type="text" id="help_text" name="help_text" class="form-control" placeholder="Enter the Help Text" required>
             </div>
 
             <!-- Save and Cancel Buttons -->
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary">
-                    <a href="{{ url_for('dashboard') }}" class="cancel-link">Cancel</a>
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="cancel-link">Cancel</a>
                 </button>
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
 
-    <!-- JavaScript -->
     <script>
-        // Drag and Drop File Upload
-        const dragDropArea = document.getElementById('drag-drop-area');
-        const fileInput = document.getElementById('template_file');
-
-        dragDropArea.addEventListener('click', () => fileInput.click());
-
-        dragDropArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dragDropArea.style.backgroundColor = '#f8f9fa';
-        });
-
-        dragDropArea.addEventListener('dragleave', () => {
-            dragDropArea.style.backgroundColor = 'transparent';
-        });
-
-        dragDropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dragDropArea.style.backgroundColor = 'transparent';
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                fileInput.files = e.dataTransfer.files;
-                dragDropArea.innerHTML = File Uploaded: ${file.name};
-            }
-        });
-
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-menu');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
@@ -308,6 +296,43 @@
         });
 
     </script>
+
+    <script>
+        const dragDropArea = document.getElementById('drag-drop-area');
+        const fileInput = document.getElementById('template_file');
+        const fileNameDisplay = document.getElementById('templateFileName');
+
+        dragDropArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = `File Uploaded: ${file.name}`;
+                fileNameDisplay.style.display = 'block';
+            }
+        });
+
+        dragDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragDropArea.style.backgroundColor = '#f0f8ff';
+        });
+
+        dragDropArea.addEventListener('dragleave', () => {
+        dragDropArea.style.backgroundColor = '#f8f9fa';
+        });
+
+        dragDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragDropArea.style.backgroundColor = '#f8f9fa';
+                const file = e.dataTransfer.files[0];
+            if (file) {
+                fileInput.files = e.dataTransfer.files;
+                fileNameDisplay.textContent = `File Uploaded: ${file.name}`;
+                fileNameDisplay.style.display = 'block';
+            }
+        });
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
            const flashMessages = document.querySelectorAll('.alert');
@@ -322,5 +347,65 @@
         });
     });
     </script>
+    
+    <script>
+        document.getElementById('promptUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+            document.getElementById('prompt').value = e.target.result;
+            };
+            reader.readAsText(file);
+        });
+
+
+        function downloadPromptText() {
+        const promptContent = document.getElementById('prompt').value;
+        if (!promptContent.trim()) return;
+
+        const blob = new Blob([promptContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "prompt.txt";
+        a.click();
+
+        URL.revokeObjectURL(url);
+        }
+    </script>
+
+    <script>
+        document.getElementById('inputUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('input_expected').value = e.target.result;
+            };
+        reader.readAsText(file);
+        });
+
+
+        function inputPromptText() {
+        const promptContent = document.getElementById('input_expected').value;
+        if (!promptContent.trim()) return;
+
+        const blob = new Blob([promptContent], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Input Expected.txt";
+        a.click();
+
+        URL.revokeObjectURL(url);
+        }
+
+    </script>
+
 </body>
 </html>

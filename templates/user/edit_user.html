@@ -6,23 +6,25 @@
     <title>Edit User</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@10.2.0/public/assets/styles/choices.min.css">
     <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #eef2f7;
             font-family: Arial, sans-serif;
-            flex-direction: column; /* Stack the logo and container */
+            flex-direction: column;
         }
         .auth-logo {
-            text-align: center; /* Center the logo */
-            margin-bottom: 20px; /* Add space between logo and login container */
+            text-align: center; 
+            margin-bottom: 20px; 
         }
         .auth-logo img {
             max-height: 40px;
-            width: auto; /* Maintain aspect ratio */
+            width: auto; 
         }
         .login-container {
             background-color: white;
@@ -64,7 +66,7 @@
             width: 35%;
         }
         .btn-update:hover {
-            background-color: #4022e9; /* Remove hover effect */
+            background-color: #4022e9; 
         }
         .btn-cancel {
             background-color: transparent;
@@ -76,17 +78,67 @@
             font-weight: bold;
         }
         .btn-cancel:hover {
-            background-color: transparent; /* Remove hover effect */
+            background-color: transparent; 
             color: #d9534f;
         }
         .btn-cancel a {
             color: #000000;
             text-decoration: none;
         }
+
+        .choices__inner { 
+            text-align: left;
+            padding-left: 30px !important;
+            min-height: 37px !important;
+            padding: 6px 10px;
+            border-radius: 5px;
+            background-color: #f5f5f5;
+            border: 1px solid #ced4da;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .choices__list--dropdown .choices__item {
+            text-align: left;
+            padding-left: 30px !important;
+            padding: 10px 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            border: none !
+        }
+    
+        .choices__list--multiple .choices__item {
+           background-color: transparent !important;
+           color: black !important;
+           border: none; 
+           border-radius: 3px;
+           font-size: 14px;
+           padding: 4px;
+        } 
+
+        .choices__list--multiple .choices__item .choices__button {
+           color: black !important;
+           opacity: 1;
+           background-image: none !important; 
+           background: none !important;    
+           font-size: 16px;
+           border: none !important;
+           cursor: pointer;
+           margin-left: 8px;
+        }
+    
+        .choices__input {
+           border: none !;
+           font-size: 14px;
+           margin: 0;
+           padding: 4px;
+        }
+        
         .select-wrapper {
             position: relative;
             width: 100%;
         }
+       
         .select-wrapper select {
             width: 100%;
             appearance: none;
@@ -105,18 +157,17 @@
             pointer-events: none;
         }
 
-
         .footer {
             position: fixed;
             bottom: 10px;
             right: 10px;
             text-align: right;
             font-size: 14px;
-            color: #6c757d; /* Muted gray */
+            color: #6c757d; 
         }
         .footer a {
             text-decoration: none;
-            color: #007bff; /* Blue link */
+            color: #007bff;
         }
         .footer a:hover {
             text-decoration: underline;
@@ -140,11 +191,11 @@
 </head>
 <body>
     <div class="auth-logo">
-        <img src="/static/LogoWhite.png"> <!-- Add your logo path here -->
+        <img src="/static/LogoWhite.png"> 
     </div>
 
     <div class="back-icon-container">
-        <a href="{{ url_for('view_usersPermission') }}" class="back-icon" title="Go Back">
+        <a href="{{ url_for('user.view_usersPermission') }}" class="back-icon" title="Go Back">
             <i class="fas fa-arrow-left"></i>
         </a>
     </div>
@@ -188,31 +239,46 @@
                     </select>
                 </div>
             </div>
-
-            <!-- Business Function & GPT Name Dropdown -->
             <div class="form-group">
-                <label for="rolebase_gptname">Role & GPT Name</label>
-                <div class="select-wrapper">
-                    <select id="rolebase_gptname" name="rolebase_gptname" class="form-control" required>
-                        <option value="" {% if not user['rolebase_gptname'] %}selected{% endif %}>Select Role & GPT</option>
-
-                        {% for role, gpt in business_functions %}
-                            <option value="{{ role }}|{{ gpt }}" 
-                                {% if user['rolebase_gptname'] == role + '|' + gpt %}selected{% endif %}>
-                                {{ role }} - {{ gpt }}
-                            </option>
-                        {% endfor %}
-                    </select>
+            <label for="rolebase_gptname">Role & GPT Name</label>
+            <div class="select-wrapper">
+                <select id="rolebase_gptname" name="rolebase_gptname" class="form-control" multiple required>
+                {% for role, gpt in business_functions %}
+                    {% set combined = role + '|' + gpt %}
+                        <option value="{{ combined }}"
+                           {% if combined in user['rolebase_gptname'].split(',') %}selected{% endif %}>
+                           {{ role }} - {{ gpt }}
+                        </option>
+                {% endfor %}
+                </select>
                 </div>
             </div>
-
             <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="btn btn-cancel"><a href="{{ url_for('view_usersPermission') }}">Cancel</a></button>
+                <button type="button" class="btn btn-cancel"><a href="{{ url_for('user.view_usersPermission') }}">Cancel</a></button>
                 <button type="submit" class="btn btn-update">Update User</button>
             </div>
         </form>
     </div>
-
+    
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const rolebaseSelect = document.getElementById('rolebase_gptname');
+        new Choices(rolebaseSelect, {
+            removeItemButton: true,
+            placeholder: true,
+            //placeholderValue: 'Select Role & GPT',
+            searchPlaceholderValue: 'Search...',
+            itemSelectText: '',
+            maxItemCount: -1,
+            shouldSort: false,
+            //renderSelectedChoices: 'always' // Prevent tags from appearing inside
+        });
+        if (rolebaseSelect.selectedOptions.length > 0) {
+            choices._setPlaceholderValue();
+        }
+        });
+    </script>
     <script>
         document.getElementById("rolebase_gptname").addEventListener("change", function() {
         var selectedValue = this.value; 
@@ -226,18 +292,16 @@
         document.addEventListener("DOMContentLoaded", function () {
            const flashMessages = document.querySelectorAll('.alert');
 
-        // Set a timer for each message to auto-dismiss after 5 seconds
         flashMessages.forEach((alert) => {
            setTimeout(() => {
-           alert.classList.remove('show'); // Hide the alert
-           alert.classList.add('fade');   // Add fade-out effect
-           setTimeout(() => alert.remove(), 150); // Remove element after fade-out
-           }, 3000); // 3000ms = 3 seconds
+           alert.classList.remove('show'); 
+           alert.classList.add('fade');  
+           setTimeout(() => alert.remove(), 150); 
+           }, 3000);
         });
     });
     </script>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <div class="footer">
         Developed by <a href="https://www.valueglobal.net" target="_blank" rel="noreferrer">Value Global LLC</a>.
