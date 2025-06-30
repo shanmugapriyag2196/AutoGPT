@@ -11,14 +11,14 @@ from extension import db
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-#from routes.dashboard.pinecone_store import add_to_vector_db
+from routes.dashboard.faiss_store import add_to_vector_db, search_similar
 
 
 load_dotenv()
 
 # Initialize the LLM and conversation
-llm = ChatOpenAI(model_name="gpt-4", temperature=0.7, openai_api_key=os.getenv("OPENAI_API_KEY"))
-#llm = ChatOpenAI(temperature=0,model_name="llama3-70b-8192",openai_api_base="https://api.groq.com/openai/v1",openai_api_key=os.getenv("GROQ_API_KEY"))
+#llm = ChatOpenAI(model_name="gpt-4", temperature=0.7, openai_api_key=os.getenv("OPENAI_API_KEY"))
+llm = ChatOpenAI(temperature=0,model_name="llama3-70b-8192",openai_api_base="https://api.groq.com/openai/v1",openai_api_key=os.getenv("GROQ_API_KEY"))
 #llm = ChatOpenAI(model_name="mistralai/Mixtral-8x7B-Instruct-v0.1",openai_api_key=os.getenv("TOGETHER_API_KEY"),openai_api_base="https://api.together.xyz/v1",temperature=0.7)
 
 memory = ConversationBufferMemory(k=5)
@@ -71,7 +71,7 @@ def process_text():
     db.session.commit()
 
     # Store vector in Pinecone with metadata
-    #add_to_vector_db(formatted_response, metadata={"prompt_id": prompt_id, "user_input": user_input})
+    add_to_vector_db(formatted_response, metadata={"prompt_id": prompt_id, "user_input": user_input})
 
     return jsonify({'ai_response': formatted_response})
     
@@ -96,10 +96,10 @@ def format_meeting_details(text):
     return "\n".join(formatted_lines)
 
 
-#from routes.dashboard.pinecone_store import search_similar
+from routes.dashboard.faiss_store import search_similar
 
-#@dashboard_bp.route('/search-vector', methods=['POST'])
-#def search_vector():
+@dashboard_bp.route('/search-vector', methods=['POST'])
+def search_vector():
     query = request.form.get('query')
     if not query:
         return jsonify({'error': 'No query provided'}), 400

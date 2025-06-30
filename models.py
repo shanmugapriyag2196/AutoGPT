@@ -69,3 +69,17 @@ init_sqlite_db1()
 
 with app.app_context():     # Initialize database
     db.create_all()
+
+
+
+import os
+from libsql_client import create_client_sync
+
+def get_conn_autogpt1():
+    return create_client_sync(url=os.getenv("TURSO_URL_autogpt1"), auth_token=os.getenv("TURSO_TOKEN_autogpt1"))
+
+def get_conn_user2():
+    return create_client_sync(url=os.getenv("TURSO_URL_user2"), auth_token=os.getenv("TURSO_TOKEN_user2"))
+
+def get_conn_user4():
+    return create_client_sync(url=os.getenv("TURSO_URL_user4"), auth_token=os.getenv("TURSO_TOKEN_user4"))

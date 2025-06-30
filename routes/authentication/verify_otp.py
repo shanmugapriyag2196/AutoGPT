@@ -44,4 +44,4 @@ def verify_otp():
         return redirect(url_for('auth.index'))
     else:
         flash("Invalid OTP. Please try again.", "danger")
-        return redirect(url_for('authentication/verify_otp'))
+        return redirect(url_for('auth.verify_otp'))
